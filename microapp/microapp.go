@@ -23,9 +23,10 @@ package microapp
 import (
 	"context"
 
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/domain"
 	"github.com/houseme/bytedance/microapp/authorize"
 	"github.com/houseme/bytedance/microapp/config"
-	"github.com/houseme/bytedance/microapp/credential"
 	"github.com/houseme/bytedance/utility/base"
 )
 
@@ -53,8 +54,17 @@ func New(ctx context.Context, cfg *config.Config) (*MicroApp, error) {
 
 	return &MicroApp{
 		ctxCfg: &config.ContextConfig{
-			Config:            cfg,
-			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg, credential.CacheKeyPrefix),
+			Config: cfg,
+			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, &domain.Config{
+				ClientKey:      cfg.ClientKey(),
+				ClientSecret:   cfg.ClientSecret(),
+				Cache:          cfg.Cache(),
+				Request:        cfg.Request(),
+				Logger:         cfg.Logger(),
+				RedirectURL:    cfg.RedirectURL(),
+				Scopes:         cfg.Scopes(),
+				CacheKeyPrefix: credential.CacheKeyPrefix,
+			}),
 		},
 	}, nil
 }

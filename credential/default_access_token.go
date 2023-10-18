@@ -26,7 +26,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/houseme/bytedance/microapp/domain"
+	"github.com/houseme/bytedance/domain"
 	"github.com/houseme/bytedance/utility/base"
 	"github.com/houseme/bytedance/utility/cache"
 	"github.com/houseme/bytedance/utility/logger"
@@ -82,13 +82,22 @@ type AccessToken struct {
 
 // GetAccessToken 获取 access_token，先从 cache 中获取，没有则从服务端获取
 func (t *DefaultAccessToken) GetAccessToken(ctx context.Context, openID string) (accessToken string, err error) {
+	accessTokenCacheKey := fmt.Sprintf("%s_access_token_%s", t.cacheKeyPrefix, openID)
+	if val := t.cache.Get(ctx, accessTokenCacheKey); val != nil {
+		if accessToken = val.(string); accessToken != "" {
+			return
+		}
+	}
+
 	// 加上 lock，是为了防止在并发获取 token 时，cache 刚好失效，导致从抖音服务器上获取到不同 token
 	t.accessTokenLock.Lock()
 	defer t.accessTokenLock.Unlock()
 
-	if val := t.cache.Get(ctx, fmt.Sprintf("%s_access_token_%s", t.cacheKeyPrefix, openID)); val != nil {
-		accessToken = val.(string)
-		return
+	// 双检，防止重复从微信服务器获取
+	if val := t.cache.Get(ctx, accessTokenCacheKey); val != nil {
+		if accessToken = val.(string); accessToken != "" {
+			return
+		}
 	}
 
 	// 刷新 AccessToken

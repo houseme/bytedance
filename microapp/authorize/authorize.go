@@ -25,8 +25,8 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/houseme/bytedance/credential"
 	"github.com/houseme/bytedance/microapp/config"
-	"github.com/houseme/bytedance/microapp/credential"
 )
 
 const (

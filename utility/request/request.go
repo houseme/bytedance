@@ -29,12 +29,14 @@ type Request interface {
 	Get(ctx context.Context, url string) ([]byte, error)
 	Post(ctx context.Context, url string, data []byte) ([]byte, error)
 	PostJSON(ctx context.Context, url string, data []byte) ([]byte, error)
-	PostFile(ctx context.Context, url string, data []byte, files []MultipartFormField) ([]byte, error)
-	PostMultipartForm(ctx context.Context, url string, data []byte, files []MultipartFormField) ([]byte, error)
+	PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
+	PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
 }
 
 // MultipartFormField multipart form field
 type MultipartFormField struct {
+	IsFile    bool   `json:"isFile"`
+	Value     []byte `json:"value"`
 	FieldName string `json:"fieldName"`
 	FileName  string `json:"fileName"`
 }

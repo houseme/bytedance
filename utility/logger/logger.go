@@ -26,12 +26,12 @@ import (
 
 // ILogger is the API interface for logger.
 type ILogger interface {
-	Print(ctx context.Context, v ...interface{})
-	Printf(ctx context.Context, format string, v ...interface{})
 	Debug(ctx context.Context, v ...interface{})
 	Debugf(ctx context.Context, format string, v ...interface{})
 	Info(ctx context.Context, v ...interface{})
 	Infof(ctx context.Context, format string, v ...interface{})
+	Warn(ctx context.Context, v ...interface{})
+	Warnf(ctx context.Context, format string, v ...interface{})
 	Error(ctx context.Context, v ...interface{})
 	Errorf(ctx context.Context, format string, v ...interface{})
 	Fatal(ctx context.Context, v ...interface{})
