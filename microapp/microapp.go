@@ -1,58 +1,89 @@
+/*
+ *  Copyright bytedance Author(https://houseme.github.io/bytedance/). All Rights Reserved.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *  You can obtain one at https://github.com/houseme/bytedance.
+ *
+ */
+
+// Package microapp mini program
 package microapp
 
 import (
 	"context"
 
-	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/os/glog"
+	"github.com/houseme/bytedance/microapp/authorize"
+	"github.com/houseme/bytedance/microapp/config"
+	"github.com/houseme/bytedance/microapp/credential"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 // MicroApp mini program
 type MicroApp struct {
-	opt    options
-	logger glog.ILogger
-}
-
-type options struct {
-	Logger    glog.ILogger
-	KeyID     string
-	AccessKey string
-}
-
-// Option micro app option
-type Option func(*options)
-
-// WithLogger set logger
-func WithLogger(logger glog.ILogger) Option {
-	return func(o *options) {
-		o.Logger = logger
-	}
-}
-
-// WithKeyID set key id
-func WithKeyID(keyID string) Option {
-	return func(o *options) {
-		o.KeyID = keyID
-	}
-}
-
-// WithAccessKey set access key
-func WithAccessKey(accessKey string) Option {
-	return func(o *options) {
-		o.AccessKey = accessKey
-	}
+	ctxCfg *config.ContextConfig
 }
 
 // New micro app
-func New(ctx context.Context, opts ...Option) *MicroApp {
-	op := options{
-		Logger: g.Log(),
+func New(ctx context.Context, cfg *config.Config) (*MicroApp, error) {
+	if cfg == nil {
+		return nil, base.ErrConfigNotFound
 	}
-	for _, option := range opts {
-		option(&op)
+	if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
 	}
+
+	if cfg.RedirectURL() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("redirect url")
+	}
+
+	if cfg.Scopes() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("scopes")
+	}
+
 	return &MicroApp{
-		opt:    op,
-		logger: op.Logger,
+		ctxCfg: &config.ContextConfig{
+			Config:            cfg,
+			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg, credential.CacheKeyPrefix),
+		},
+	}, nil
+}
+
+// SetAccessTokenHandle 自定义 access_token 获取方式
+func (ma *MicroApp) SetAccessTokenHandle(accessTokenHandle credential.AccessTokenHandle) {
+	ma.ctxCfg.AccessTokenHandle = accessTokenHandle
+}
+
+// GetContext get Context
+func (ma *MicroApp) GetContext() *config.ContextConfig {
+	return ma.ctxCfg
+}
+
+// GetAccessToken 获取 access_token
+func (ma *MicroApp) GetAccessToken(ctx context.Context, openID string) (string, error) {
+	return ma.ctxCfg.GetAccessToken(ctx, openID)
+}
+
+// GetClientToken 获取 client_token
+func (ma *MicroApp) GetClientToken(ctx context.Context) (string, error) {
+	clientToken, err := ma.ctxCfg.GetClientToken(ctx)
+	if err != nil {
+		return "", err
 	}
+	return clientToken.AccessToken, nil
+}
+
+// GetAuthorize oauth2 网页授权
+func (ma *MicroApp) GetAuthorize() *authorize.Authorize {
+	return authorize.NewAuthorize(ma.ctxCfg)
 }
