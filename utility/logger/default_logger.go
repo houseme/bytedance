@@ -42,53 +42,53 @@ func NewDefaultLogger() *DefaultLogger {
 }
 
 // Debug 调试
-func (logger *DefaultLogger) Debug(ctx context.Context, v ...interface{}) {
+func (logger *DefaultLogger) Debug(ctx context.Context, v ...any) {
 	logger.logger.DebugContext(ctx, "debug level", v...)
 }
 
 // Debugf 调试
-func (logger *DefaultLogger) Debugf(ctx context.Context, format string, v ...interface{}) {
-	logger.logger.DebugContext(ctx, "debug level", fmt.Sprintf(format, v...), nil)
+func (logger *DefaultLogger) Debugf(ctx context.Context, format string, v ...any) {
+	logger.logger.DebugContext(ctx, "debug level", fmt.Sprintf(format, v...), "")
 }
 
 // Info 信息
-func (logger *DefaultLogger) Info(ctx context.Context, v ...interface{}) {
+func (logger *DefaultLogger) Info(ctx context.Context, v ...any) {
 	logger.logger.InfoContext(ctx, "info level", v...)
 }
 
 // Infof 信息
-func (logger *DefaultLogger) Infof(ctx context.Context, format string, v ...interface{}) {
+func (logger *DefaultLogger) Infof(ctx context.Context, format string, v ...any) {
 	logger.logger.InfoContext(ctx, "info level", fmt.Sprintf(format, v...), nil)
 }
 
 // Warn 警告
-func (logger *DefaultLogger) Warn(ctx context.Context, v ...interface{}) {
+func (logger *DefaultLogger) Warn(ctx context.Context, v ...any) {
 	logger.logger.WarnContext(ctx, "warn level", v...)
 }
 
 // Warnf 警告
-func (logger *DefaultLogger) Warnf(ctx context.Context, format string, v ...interface{}) {
+func (logger *DefaultLogger) Warnf(ctx context.Context, format string, v ...any) {
 	logger.logger.WarnContext(ctx, "warn level", fmt.Sprintf(format, v...), nil)
 }
 
 // Error 错误
-func (logger *DefaultLogger) Error(ctx context.Context, v ...interface{}) {
+func (logger *DefaultLogger) Error(ctx context.Context, v ...any) {
 	logger.logger.ErrorContext(ctx, "error level", v...)
 }
 
 // Errorf 错误
-func (logger *DefaultLogger) Errorf(ctx context.Context, format string, v ...interface{}) {
+func (logger *DefaultLogger) Errorf(ctx context.Context, format string, v ...any) {
 	logger.logger.ErrorContext(ctx, "error level", fmt.Sprintf(format, v...), nil)
 }
 
 // Fatal 致命错误
-func (logger *DefaultLogger) Fatal(ctx context.Context, v ...interface{}) {
+func (logger *DefaultLogger) Fatal(ctx context.Context, v ...any) {
 	logger.logger.ErrorContext(ctx, "fatal level", v...)
 	os.Exit(1)
 }
 
 // Fatalf 致命错误
-func (logger *DefaultLogger) Fatalf(ctx context.Context, format string, v ...interface{}) {
+func (logger *DefaultLogger) Fatalf(ctx context.Context, format string, v ...any) {
 	logger.logger.ErrorContext(ctx, "fatal level", fmt.Sprintf(format, v...), nil)
 	os.Exit(1)
 }
