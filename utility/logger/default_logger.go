@@ -43,7 +43,7 @@ func NewDefaultLogger() *DefaultLogger {
 
 // Debug 调试
 func (logger *DefaultLogger) Debug(ctx context.Context, v ...interface{}) {
-	logger.logger.DebugContext(ctx, "debug level", v)
+	logger.logger.DebugContext(ctx, "debug level", v...)
 }
 
 // Debugf 调试
@@ -53,7 +53,7 @@ func (logger *DefaultLogger) Debugf(ctx context.Context, format string, v ...int
 
 // Info 信息
 func (logger *DefaultLogger) Info(ctx context.Context, v ...interface{}) {
-	logger.logger.InfoContext(ctx, "info level", v)
+	logger.logger.InfoContext(ctx, "info level", v...)
 }
 
 // Infof 信息
@@ -63,7 +63,7 @@ func (logger *DefaultLogger) Infof(ctx context.Context, format string, v ...inte
 
 // Warn 警告
 func (logger *DefaultLogger) Warn(ctx context.Context, v ...interface{}) {
-	logger.logger.WarnContext(ctx, "warn level", v)
+	logger.logger.WarnContext(ctx, "warn level", v...)
 }
 
 // Warnf 警告
@@ -73,7 +73,7 @@ func (logger *DefaultLogger) Warnf(ctx context.Context, format string, v ...inte
 
 // Error 错误
 func (logger *DefaultLogger) Error(ctx context.Context, v ...interface{}) {
-	logger.logger.ErrorContext(ctx, "error level", v)
+	logger.logger.ErrorContext(ctx, "error level", v...)
 }
 
 // Errorf 错误
@@ -83,7 +83,7 @@ func (logger *DefaultLogger) Errorf(ctx context.Context, format string, v ...int
 
 // Fatal 致命错误
 func (logger *DefaultLogger) Fatal(ctx context.Context, v ...interface{}) {
-	logger.logger.ErrorContext(ctx, "fatal level", v)
+	logger.logger.ErrorContext(ctx, "fatal level", v...)
 	os.Exit(1)
 }
 
