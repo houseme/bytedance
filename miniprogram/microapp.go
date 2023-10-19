@@ -26,7 +26,9 @@ import (
 	"github.com/houseme/bytedance/config"
 	"github.com/houseme/bytedance/credential"
 	"github.com/houseme/bytedance/miniprogram/authorize"
+	"github.com/houseme/bytedance/miniprogram/link"
 	"github.com/houseme/bytedance/miniprogram/qrcode"
+	"github.com/houseme/bytedance/miniprogram/schema"
 	"github.com/houseme/bytedance/utility/base"
 )
 
@@ -92,4 +94,14 @@ func (ma *MicroApp) GetAuthorize() *authorize.Authorize {
 // GetQrcode 获取小程序码
 func (ma *MicroApp) GetQrcode() *qrcode.QRCode {
 	return qrcode.NewQRCode(ma.ctxCfg)
+}
+
+// GetLink 获取小程序 link
+func (ma *MicroApp) GetLink() *link.Link {
+	return link.New(ma.ctxCfg)
+}
+
+// GetSchema 获取小程序 schema
+func (ma *MicroApp) GetSchema() *schema.Schema {
+	return schema.New(ma.ctxCfg)
 }
