@@ -26,7 +26,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/houseme/bytedance/domain"
+	"github.com/houseme/bytedance/config"
 	"github.com/houseme/bytedance/utility/base"
 	"github.com/houseme/bytedance/utility/cache"
 	"github.com/houseme/bytedance/utility/logger"
@@ -38,7 +38,7 @@ const (
 	renewRefreshTokenURL = "https://open.douyin.com/oauth/oauth/renew_refresh_token?client_key=%s&refresh_token=%s"
 	clientTokenURL       = "https://open.douyin.com/oauth/oauth/client_token?client_key=%s&client_secret=%s&grant_type=client_credential"
 	// CacheKeyPrefix 抖音 open cache key 前缀
-	CacheKeyPrefix = "douyin_open"
+	CacheKeyPrefix = "bytedance_dy_open"
 )
 
 // DefaultAccessToken 默认 AccessToken 获取
@@ -53,18 +53,14 @@ type DefaultAccessToken struct {
 }
 
 // NewDefaultAccessToken new DefaultAccessToken
-func NewDefaultAccessToken(_ context.Context, cfg *domain.Config) AccessTokenHandle {
-	if cfg.CacheKeyPrefix == "" {
-		cfg.CacheKeyPrefix = CacheKeyPrefix
-	}
-
+func NewDefaultAccessToken(_ context.Context, cfg *config.Config) AccessTokenHandle {
 	return &DefaultAccessToken{
-		ClientKey:       cfg.ClientKey,
-		ClientSecret:    cfg.ClientSecret,
-		cache:           cfg.Cache,
-		request:         cfg.Request,
-		logger:          cfg.Logger,
-		cacheKeyPrefix:  cfg.CacheKeyPrefix,
+		ClientKey:       cfg.ClientKey(),
+		ClientSecret:    cfg.ClientSecret(),
+		cache:           cfg.Cache(),
+		request:         cfg.Request(),
+		logger:          cfg.Logger(),
+		cacheKeyPrefix:  CacheKeyPrefix,
 		accessTokenLock: new(sync.Mutex),
 	}
 }
@@ -214,6 +210,30 @@ type clientTokenRes struct {
 
 // GetClientToken 该接口用于获取接口调用的凭证 client_access_token，主要用于调用不需要用户授权就可以调用的接口。
 func (t *DefaultAccessToken) GetClientToken(ctx context.Context) (clientToken *ClientToken, err error) {
+	accessTokenCacheKey := fmt.Sprintf("%s_client_token__%s", t.cacheKeyPrefix, t.ClientKey)
+	if val := t.cache.Get(ctx, accessTokenCacheKey); val != nil {
+		if accessToken := val.(string); accessToken != "" {
+			clientToken = &ClientToken{
+				AccessToken: accessToken,
+			}
+			return
+		}
+	}
+
+	// 加上 lock，是为了防止在并发获取 token 时，cache 刚好失效，导致从抖音服务器上获取到不同 token
+	t.accessTokenLock.Lock()
+	defer t.accessTokenLock.Unlock()
+
+	// 双检，防止重复从微信服务器获取
+	if val := t.cache.Get(ctx, accessTokenCacheKey); val != nil {
+		if accessToken := val.(string); accessToken != "" {
+			clientToken = &ClientToken{
+				AccessToken: accessToken,
+			}
+			return
+		}
+	}
+
 	var response []byte
 	if response, err = t.request.Get(ctx, fmt.Sprintf(clientTokenURL, t.ClientKey, t.ClientSecret)); err != nil {
 		return
@@ -227,6 +247,18 @@ func (t *DefaultAccessToken) GetClientToken(ctx context.Context) (clientToken *C
 		err = fmt.Errorf("GetUserAccessToken error : errcode=%v , errmsg=%v", result.Data.ErrCode, result.Data.ErrMsg)
 		return
 	}
+	if err = t.SetClientToken(ctx, &result.Data); err != nil {
+		return
+	}
 	clientToken = &result.Data
+	return
+}
+
+// SetClientToken 设置 client_token
+func (t *DefaultAccessToken) SetClientToken(ctx context.Context, clientToken *ClientToken) (err error) {
+	// access token cache
+	if err = t.cache.Set(ctx, fmt.Sprintf("%s_client_token__%s", t.cacheKeyPrefix, t.ClientKey), clientToken.AccessToken, time.Duration(clientToken.ExpiresIn-1500)*time.Second); err != nil {
+		return
+	}
 	return
 }

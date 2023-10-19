@@ -34,6 +34,7 @@ type Config struct {
 	clientSecret string
 	redirectURL  string
 	scopes       string
+	salt         string // 支付密钥值
 	cache        cache.Cache
 	request      request.Request
 	logger       logger.ILogger
@@ -44,6 +45,7 @@ type options struct {
 	ClientSecret string
 	RedirectURL  string
 	Scopes       string
+	Salt         string // 支付密钥值
 	Cache        cache.Cache
 	Logger       logger.ILogger
 	Request      request.Request
@@ -77,6 +79,13 @@ func WithRedirectURL(redirectURL string) Option {
 func WithScopes(scopes string) Option {
 	return func(o *options) {
 		o.Scopes = scopes
+	}
+}
+
+// WithSalt set salt
+func WithSalt(salt string) Option {
+	return func(o *options) {
+		o.Salt = salt
 	}
 }
 
@@ -140,13 +149,20 @@ func (cfg *Config) SetScopes(scopes string) *Config {
 	return cfg
 }
 
+// SetSalt 设置 salt
+func (cfg *Config) SetSalt(salt string) *Config {
+	cfg.salt = salt
+	return cfg
+}
+
 // NewConfig new config
-func NewConfig(ctx context.Context, clientKey, clientSecret, redirectURL, scopes string) *Config {
+func NewConfig(ctx context.Context, clientKey, clientSecret, redirectURL, scopes, salt string) *Config {
 	return &Config{
 		clientKey:    clientKey,
 		clientSecret: clientSecret,
 		redirectURL:  redirectURL,
 		scopes:       scopes,
+		salt:         salt,
 		cache:        cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
 		request:      request.NewDefaultRequest(),
 		logger:       logger.NewDefaultLogger(),
@@ -189,6 +205,11 @@ func (cfg *Config) RedirectURL() string {
 // Scopes 获取 scopes
 func (cfg *Config) Scopes() string {
 	return cfg.scopes
+}
+
+// Salt 获取 salt
+func (cfg *Config) Salt() string {
+	return cfg.salt
 }
 
 // Cache 获取 cache

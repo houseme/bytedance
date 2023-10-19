@@ -28,7 +28,8 @@ import (
 type Request interface {
 	Get(ctx context.Context, url string) ([]byte, error)
 	Post(ctx context.Context, url string, data []byte) ([]byte, error)
-	PostJSON(ctx context.Context, url string, data []byte) ([]byte, error)
+	PostJSON(ctx context.Context, url string, data any) ([]byte, error)
+	PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error)
 	PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
 	PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
 }

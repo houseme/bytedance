@@ -19,3 +19,38 @@
 
 // Package credential mini program credentials
 package credential
+
+import (
+	"context"
+
+	"github.com/houseme/bytedance/config"
+)
+
+// ContextConfig 公共配置
+type ContextConfig struct {
+	*config.Config
+	AccessTokenHandle
+}
+
+// SetAccessTokenHandle 设置 AccessTokenHandle
+func (cfg *ContextConfig) SetAccessTokenHandle(accessTokenHandle AccessTokenHandle) *ContextConfig {
+	cfg.AccessTokenHandle = accessTokenHandle
+	return cfg
+}
+
+// NewContextConfigWithConfig new context config with config
+func NewContextConfigWithConfig(ctx context.Context, cfg *config.Config) *ContextConfig {
+	ctxCfg := &ContextConfig{
+		Config: cfg,
+	}
+	ctxCfg.AccessTokenHandle = NewDefaultAccessToken(ctx, cfg)
+	return ctxCfg
+}
+
+// NewContextConfigWithAccessTokenHandle new context config with access_token handle
+func NewContextConfigWithAccessTokenHandle(ctx context.Context, cfg *config.Config, accessTokenHandle AccessTokenHandle) *ContextConfig {
+	return &ContextConfig{
+		Config:            cfg,
+		AccessTokenHandle: accessTokenHandle,
+	}
+}

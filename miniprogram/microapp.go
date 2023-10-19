@@ -17,22 +17,22 @@
  *
  */
 
-// Package microapp mini program
-package microapp
+// Package miniprogram mini program
+package miniprogram
 
 import (
 	"context"
 
+	"github.com/houseme/bytedance/config"
 	"github.com/houseme/bytedance/credential"
-	"github.com/houseme/bytedance/domain"
-	"github.com/houseme/bytedance/microapp/authorize"
-	"github.com/houseme/bytedance/microapp/config"
+	"github.com/houseme/bytedance/miniprogram/authorize"
+	"github.com/houseme/bytedance/miniprogram/qrcode"
 	"github.com/houseme/bytedance/utility/base"
 )
 
 // MicroApp mini program
 type MicroApp struct {
-	ctxCfg *config.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // New micro app
@@ -53,18 +53,9 @@ func New(ctx context.Context, cfg *config.Config) (*MicroApp, error) {
 	}
 
 	return &MicroApp{
-		ctxCfg: &config.ContextConfig{
-			Config: cfg,
-			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, &domain.Config{
-				ClientKey:      cfg.ClientKey(),
-				ClientSecret:   cfg.ClientSecret(),
-				Cache:          cfg.Cache(),
-				Request:        cfg.Request(),
-				Logger:         cfg.Logger(),
-				RedirectURL:    cfg.RedirectURL(),
-				Scopes:         cfg.Scopes(),
-				CacheKeyPrefix: credential.CacheKeyPrefix,
-			}),
+		ctxCfg: &credential.ContextConfig{
+			Config:            cfg,
+			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
 		},
 	}, nil
 }
@@ -75,7 +66,7 @@ func (ma *MicroApp) SetAccessTokenHandle(accessTokenHandle credential.AccessToke
 }
 
 // GetContext get Context
-func (ma *MicroApp) GetContext() *config.ContextConfig {
+func (ma *MicroApp) GetContext() *credential.ContextConfig {
 	return ma.ctxCfg
 }
 
@@ -96,4 +87,9 @@ func (ma *MicroApp) GetClientToken(ctx context.Context) (string, error) {
 // GetAuthorize oauth2 网页授权
 func (ma *MicroApp) GetAuthorize() *authorize.Authorize {
 	return authorize.NewAuthorize(ma.ctxCfg)
+}
+
+// GetQrcode 获取小程序码
+func (ma *MicroApp) GetQrcode() *qrcode.QRCode {
+	return qrcode.NewQRCode(ma.ctxCfg)
 }

@@ -80,7 +80,7 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
 }
 
 // PostJSON http post json request
-func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data []byte) ([]byte, error) {
+func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) ([]byte, error) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return nil, err
@@ -106,9 +106,38 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data []byte
 	return io.ReadAll(resp.Body)
 }
 
+// PostJSONWithRespContentType http post json request with response content type
+func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		return nil, "", err
+	}
+	jsonData = bytes.Replace(jsonData, []byte("\\u003c"), []byte("<"), -1)
+	jsonData = bytes.Replace(jsonData, []byte("\\u003e"), []byte(">"), -1)
+	jsonData = bytes.Replace(jsonData, []byte("\\u0026"), []byte("&"), -1)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(jsonData))
+	if err != nil {
+		return nil, "", err
+	}
+	req.Header.Set("Content-Type", "application/json;charset=utf-8")
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, "", err
+	}
+	defer func() {
+		_ = resp.Body.Close()
+	}()
+	if resp.StatusCode != http.StatusOK {
+		return nil, "", fmt.Errorf("http post error : uri=%v , statusCode=%v", url, resp.StatusCode)
+	}
+	res, err := io.ReadAll(resp.Body)
+	contentType := resp.Header.Get("Content-Type")
+	return res, contentType, err
+}
+
 // PostFile http post file request
 func (srv *DefaultRequest) PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error) {
-	return nil, nil
+	return srv.PostMultipartForm(ctx, url, files)
 }
 
 // PostMultipartForm http post multipart form request
@@ -119,13 +148,13 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
 		if field.IsFile {
 			fileWriter, e := bodyWriter.CreateFormFile(field.FieldName, field.FileName)
 			if e != nil {
-				err = fmt.Errorf("error writing to buffer , err=%v", e)
+				err = fmt.Errorf("error writing to buffer , err=%w", e)
 				return
 			}
 
 			fh, e := os.Open(field.FileName)
 			if e != nil {
-				err = fmt.Errorf("error opening file , err=%v", e)
+				err = fmt.Errorf("error opening file , err=%w", e)
 				return
 			}
 
@@ -137,7 +166,7 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
 		} else {
 			partWriter, e := bodyWriter.CreateFormField(field.FieldName)
 			if e != nil {
-				err = fmt.Errorf("error writing to buffer , err=%v", e)
+				err = fmt.Errorf("error writing to buffer , err=%w", e)
 				return
 			}
 			valueReader := bytes.NewReader(field.Value)
