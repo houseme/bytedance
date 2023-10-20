@@ -61,13 +61,13 @@ func (logger *DefaultLogger) Infof(ctx context.Context, format string, v ...any)
 	logger.logger.InfoContext(ctx, "info level", fmt.Sprintf(format, v...), nil)
 }
 
-// Warn 警告
-func (logger *DefaultLogger) Warn(ctx context.Context, v ...any) {
+// Warning 警告
+func (logger *DefaultLogger) Warning(ctx context.Context, v ...any) {
 	logger.logger.WarnContext(ctx, "warn level", v...)
 }
 
-// Warnf 警告
-func (logger *DefaultLogger) Warnf(ctx context.Context, format string, v ...any) {
+// Warningf 警告
+func (logger *DefaultLogger) Warningf(ctx context.Context, format string, v ...any) {
 	logger.logger.WarnContext(ctx, "warn level", fmt.Sprintf(format, v...), nil)
 }
 
