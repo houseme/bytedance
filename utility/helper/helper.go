@@ -21,6 +21,7 @@
 package helper
 
 import (
+	"bytes"
 	"crypto"
 	"crypto/rand"
 	"crypto/rsa"
@@ -28,7 +29,11 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
+	"errors"
 	"fmt"
+	"sort"
+	"strings"
+	"time"
 )
 
 // GenSign 生成签名
@@ -84,4 +89,143 @@ func PemToRSAPublicKey(pemKeyStr string) (*rsa.PublicKey, error) {
 	default:
 		return nil, fmt.Errorf("not rsa public key")
 	}
+}
+
+// Template 对字符串中的和 map 的 key 相同的字符串进行模板替换 仅支持 形如：{name}
+func Template(source string, data map[string]interface{}) string {
+	sourceCopy := &source
+	for k, val := range data {
+		valStr := ""
+		switch v := val.(type) {
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+			valStr = fmt.Sprintf("%d", v)
+		case bool:
+			valStr = fmt.Sprintf("%v", v)
+		default:
+			valStr = fmt.Sprintf("%s", v)
+		}
+		*sourceCopy = strings.Replace(*sourceCopy, strings.Join([]string{"{", k, "}"}, ""), valStr, 1)
+	}
+	return *sourceCopy
+}
+
+// GetCurrTS return current timestamps
+func GetCurrTS() int64 {
+	return time.Now().Unix()
+}
+
+// SliceChunk 用于将字符串切片分块
+func SliceChunk(src []string, chunkSize int) (chunks [][]string) {
+	total := len(src)
+	chunks = make([][]string, 0)
+	if chunkSize < 1 {
+		chunkSize = 1
+	}
+	if total == 0 {
+		return
+	}
+
+	chunkNum := total / chunkSize
+	if total%chunkSize != 0 {
+		chunkNum++
+	}
+
+	chunks = make([][]string, chunkNum)
+	for i := 0; i < chunkNum; i++ {
+		for j := 0; j < chunkSize; j++ {
+			offset := i*chunkSize + j
+			if offset >= total {
+				return
+			}
+
+			if chunks[i] == nil {
+				actualChunkSize := chunkSize
+				if i == chunkNum-1 && total%chunkSize != 0 {
+					actualChunkSize = total % chunkSize
+				}
+				chunks[i] = make([]string, actualChunkSize)
+			}
+
+			chunks[i][j] = src[offset]
+		}
+	}
+
+	return
+}
+
+// Query 将 Map 序列化为 Query 参数
+func Query(params map[string]interface{}) string {
+	finalString := make([]string, 0)
+	for key, value := range params {
+		valueString := ""
+		switch v := value.(type) {
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+			valueString = fmt.Sprintf("%d", v)
+		case bool:
+			valueString = fmt.Sprintf("%v", v)
+		default:
+			valueString = fmt.Sprintf("%s", v)
+		}
+		finalString = append(finalString, strings.Join([]string{key, valueString}, "="))
+	}
+	return strings.Join(finalString, "&")
+}
+
+// OrderParam order params
+func OrderParam(p map[string]string, bizKey string) (returnStr string) {
+	keys := make([]string, 0, len(p))
+	for k := range p {
+		if k == "sign" {
+			continue
+		}
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	var buf bytes.Buffer
+	for _, k := range keys {
+		if p[k] == "" {
+			continue
+		}
+		if buf.Len() > 0 {
+			buf.WriteByte('&')
+		}
+		buf.WriteString(k)
+		buf.WriteByte('=')
+		buf.WriteString(p[k])
+	}
+	buf.WriteString(bizKey)
+	returnStr = buf.String()
+	return
+}
+
+// RSADecrypt 数据解密
+func RSADecrypt(privateKey string, ciphertext []byte) ([]byte, error) {
+	block, _ := pem.Decode([]byte(privateKey))
+	if block == nil {
+		return nil, errors.New("PrivateKey format error")
+	}
+	privy, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+	if err != nil {
+		oldErr := err
+		key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("ParsePKCS1PrivateKey error: %s, ParsePKCS8PrivateKey error: %s", oldErr.Error(), err.Error())
+		}
+		switch t := key.(type) {
+		case *rsa.PrivateKey:
+			privy = key.(*rsa.PrivateKey)
+		default:
+			return nil, fmt.Errorf("ParsePKCS1PrivateKey error: %s, ParsePKCS8PrivateKey error: Not supported privatekey format, should be *rsa.PrivateKey, got %T", oldErr.Error(), t)
+		}
+	}
+	return rsa.DecryptPKCS1v15(rand.Reader, privy, ciphertext)
+}
+
+// RSADecryptBase64 Base64 解码后再次进行 RSA 解密
+func RSADecryptBase64(privateKey string, cryptoText string) ([]byte, error) {
+	encryptedData, err := base64.StdEncoding.DecodeString(cryptoText)
+	if err != nil {
+		return nil, err
+	}
+	return RSADecrypt(privateKey, encryptedData)
 }

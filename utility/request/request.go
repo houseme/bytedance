@@ -32,6 +32,8 @@ type Request interface {
 	PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error)
 	PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
 	PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
+	PostXML(ctx context.Context, url string, data any) ([]byte, error)
+	PostXMLWithTLS(ctx context.Context, url string, data any, ca, key string) ([]byte, error)
 }
 
 // MultipartFormField multipart form field

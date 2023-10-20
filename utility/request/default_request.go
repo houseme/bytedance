@@ -22,12 +22,18 @@ package request
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
+	"encoding/pem"
+	"encoding/xml"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	"golang.org/x/crypto/pkcs12"
 )
 
 // DefaultRequest 默认请求
@@ -81,14 +87,15 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
 
 // PostJSON http post json request
 func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) ([]byte, error) {
-	jsonData, err := json.Marshal(data)
+	jsonBuf := new(bytes.Buffer)
+	enc := json.NewEncoder(jsonBuf)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(data)
 	if err != nil {
 		return nil, err
 	}
-	jsonData = bytes.Replace(jsonData, []byte("\\u003c"), []byte("<"), -1)
-	jsonData = bytes.Replace(jsonData, []byte("\\u003e"), []byte(">"), -1)
-	jsonData = bytes.Replace(jsonData, []byte("\\u0026"), []byte("&"), -1)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(jsonData))
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, jsonBuf)
 	if err != nil {
 		return nil, err
 	}
@@ -106,16 +113,16 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
 	return io.ReadAll(resp.Body)
 }
 
-// PostJSONWithRespContentType http post json request with response content type
+// PostJSONWithRespContentType http post json request with the response content type
 func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error) {
-	jsonData, err := json.Marshal(data)
+	jsonBuf := new(bytes.Buffer)
+	enc := json.NewEncoder(jsonBuf)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(data)
 	if err != nil {
 		return nil, "", err
 	}
-	jsonData = bytes.Replace(jsonData, []byte("\\u003c"), []byte("<"), -1)
-	jsonData = bytes.Replace(jsonData, []byte("\\u003e"), []byte(">"), -1)
-	jsonData = bytes.Replace(jsonData, []byte("\\u0026"), []byte("&"), -1)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(jsonData))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, jsonBuf)
 	if err != nil {
 		return nil, "", err
 	}
@@ -193,6 +200,105 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
 	}()
 	if response.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("http post error : uri=%v , statusCode=%v", url, response.StatusCode)
+	}
+	return io.ReadAll(response.Body)
+}
+
+// httpWithTLS CA 证书
+func httpWithTLS(rootCa, key string) (*http.Client, error) {
+	certData, err := os.ReadFile(rootCa)
+	if err != nil {
+		return nil, fmt.Errorf("unable to find cert path=%s, error=%v", rootCa, err)
+	}
+	cert := pkcs12ToPem(certData, key)
+	config := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
+	tr := &http.Transport{
+		TLSClientConfig:    config,
+		DisableCompression: true,
+	}
+	client := &http.Client{Transport: tr}
+	return client, nil
+}
+
+// pkcs12ToPem 将 Pkcs12 转成 Pem
+func pkcs12ToPem(p12 []byte, password string) tls.Certificate {
+	blocks, err := pkcs12.ToPEM(p12, password)
+	defer func() {
+		if x := recover(); x != nil {
+			log.Print(x)
+		}
+	}()
+	if err != nil {
+		panic(err)
+	}
+	var pemData []byte
+	for _, b := range blocks {
+		pemData = append(pemData, pem.EncodeToMemory(b)...)
+	}
+	cert, err := tls.X509KeyPair(pemData, pemData)
+	if err != nil {
+		panic(err)
+	}
+	return cert
+}
+
+// PostXML perform the HTTP/POST request with XML body
+func (srv *DefaultRequest) PostXML(ctx context.Context, url string, data any) ([]byte, error) {
+	xmlData, err := xml.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+
+	body := bytes.NewBuffer(xmlData)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+	response, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = response.Body.Close()
+	}()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http code error : uri=%v , statusCode=%v", url, response.StatusCode)
+	}
+	return io.ReadAll(response.Body)
+}
+
+// PostXMLWithTLS perform the HTTP/POST request with XML body and TLS
+func PostXMLWithTLS(ctx context.Context, url string, data any, ca, key string) ([]byte, error) {
+	xmlData, err := xml.Marshal(data)
+	if err != nil {
+		return nil, err
+	}
+	client, err := httpWithTLS(ca, key)
+	if err != nil {
+		return nil, err
+	}
+
+	body := bytes.NewBuffer(xmlData)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, body)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+	response, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = response.Body.Close()
+	}()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("http code error : uri=%v , statusCode=%v", url, response.StatusCode)
 	}
 	return io.ReadAll(response.Body)
 }

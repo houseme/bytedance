@@ -31,6 +31,10 @@ import (
 	"github.com/houseme/bytedance/utility/request"
 )
 
+const (
+	version = "0.0.3"
+)
+
 // Bytedance 字节系开放平台
 type Bytedance struct {
 	cache   cache.Cache
@@ -45,6 +49,11 @@ func New(ctx context.Context) *Bytedance {
 		request: request.NewDefaultRequest(),
 		logger:  logger.NewDefaultLogger(),
 	}
+}
+
+// Version return version no
+func Version() string {
+	return version
 }
 
 // SetCache 设置缓存
