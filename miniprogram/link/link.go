@@ -21,6 +21,9 @@
 package link
 
 import (
+	"context"
+	"encoding/json"
+
 	"github.com/houseme/bytedance/credential"
 	"github.com/houseme/bytedance/utility/base"
 )
@@ -31,6 +34,23 @@ const (
 	queryLinkV2      = "https://open.douyin.com/api/apps/v1/url_link/query_info"
 	queryLinkQuotaV2 = "https://open.douyin.com/api/apps/v1/url_link/query_quota"
 )
+
+// GenerateV1Request generate link request
+type GenerateV1Request struct {
+	AccessToken string `json:"access_token"`
+	MaAppID     string `json:"ma_app_id"`
+	AppName     string `json:"app_name"`
+	Path        string `json:"path,omitempty"`
+	Query       string `json:"query,omitempty"`
+	ExpireTime  int    `json:"expire_time"`
+}
+
+// GenerateV1Response generate link response
+type GenerateV1Response struct {
+	ErrNo   int    `json:"err_no"`
+	ErrTips string `json:"err_tips"`
+	URLLink string `json:"url_link"`
+}
 
 // GenerateLinkRequest generate link request
 type GenerateLinkRequest struct {
@@ -93,12 +113,56 @@ type QueryLinkData struct {
 
 // Link short link relation
 type Link struct {
-	*credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // New create short link
 func New(cfg *credential.ContextConfig) *Link {
 	return &Link{
-		ContextConfig: cfg,
+		ctxCfg: cfg,
 	}
+}
+
+// Generate generate short link
+func (l *Link) Generate(ctx context.Context, req *GenerateV1Request) (resp *GenerateV1Response, err error) {
+	response, err := l.ctxCfg.Request().PostJSON(ctx, generateLink, req)
+	if err != nil {
+		return
+	}
+	resp = new(GenerateV1Response)
+	err = json.Unmarshal(response, &resp)
+	return
+}
+
+// GenerateV2 generate short link v2
+func (l *Link) GenerateV2(ctx context.Context, req *GenerateLinkRequest) (resp *GenerateLinkResponse, err error) {
+	response, err := l.ctxCfg.Request().PostJSON(ctx, generateLinkV2, req)
+	if err != nil {
+		return
+	}
+	resp = new(GenerateLinkResponse)
+	err = json.Unmarshal(response, &resp)
+	return
+}
+
+// QueryQuotaV2 query link quota v2
+func (l *Link) QueryQuotaV2(ctx context.Context, req *QueryLinkQuotaRequest) (resp *QueryLinkQuotaResponse, err error) {
+	response, err := l.ctxCfg.Request().PostJSON(ctx, queryLinkQuotaV2, req)
+	if err != nil {
+		return
+	}
+	resp = new(QueryLinkQuotaResponse)
+	err = json.Unmarshal(response, &resp)
+	return
+}
+
+// QueryV2 query link v2
+func (l *Link) QueryV2(ctx context.Context, req *QueryLinkRequest) (resp *QueryLinkResponse, err error) {
+	response, err := l.ctxCfg.Request().PostJSON(ctx, queryLinkV2, req)
+	if err != nil {
+		return
+	}
+	resp = new(QueryLinkResponse)
+	err = json.Unmarshal(response, &resp)
+	return
 }

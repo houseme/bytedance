@@ -103,6 +103,13 @@ func WithRequest(request request.Request) Option {
 	}
 }
 
+// WithCache set cache
+func WithCache(cache cache.Cache) Option {
+	return func(o *options) {
+		o.Cache = cache
+	}
+}
+
 // New create config
 func New(ctx context.Context, opts ...Option) *Config {
 	op := options{

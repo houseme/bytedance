@@ -32,7 +32,7 @@ import (
 )
 
 const (
-	version = "0.0.3"
+	version = "0.0.4"
 )
 
 // Bytedance 字节系开放平台
@@ -71,8 +71,8 @@ func (b *Bytedance) SetLogger(logger logger.ILogger) {
 	b.logger = logger
 }
 
-// OpenAPI 字节系开放平台
-func (b *Bytedance) OpenAPI(ctx context.Context, cfg *config.Config) (*miniprogram.MicroApp, error) {
+// MiniProgram mini program
+func (b *Bytedance) MiniProgram(ctx context.Context, cfg *config.Config) (*miniprogram.MicroApp, error) {
 	if cfg == nil {
 		cfg = config.New(ctx)
 	}

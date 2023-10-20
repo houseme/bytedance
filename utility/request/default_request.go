@@ -205,12 +205,12 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
 }
 
 // httpWithTLS CA 证书
-func httpWithTLS(rootCa, key string) (*http.Client, error) {
+func (srv *DefaultRequest) httpWithTLS(rootCa, key string) (*http.Client, error) {
 	certData, err := os.ReadFile(rootCa)
 	if err != nil {
 		return nil, fmt.Errorf("unable to find cert path=%s, error=%v", rootCa, err)
 	}
-	cert := pkcs12ToPem(certData, key)
+	cert := srv.pkcs12ToPem(certData, key)
 	config := &tls.Config{
 		Certificates: []tls.Certificate{cert},
 	}
@@ -223,7 +223,7 @@ func httpWithTLS(rootCa, key string) (*http.Client, error) {
 }
 
 // pkcs12ToPem 将 Pkcs12 转成 Pem
-func pkcs12ToPem(p12 []byte, password string) tls.Certificate {
+func (srv *DefaultRequest) pkcs12ToPem(p12 []byte, password string) tls.Certificate {
 	blocks, err := pkcs12.ToPEM(p12, password)
 	defer func() {
 		if x := recover(); x != nil {
@@ -273,12 +273,12 @@ func (srv *DefaultRequest) PostXML(ctx context.Context, url string, data any) ([
 }
 
 // PostXMLWithTLS perform the HTTP/POST request with XML body and TLS
-func PostXMLWithTLS(ctx context.Context, url string, data any, ca, key string) ([]byte, error) {
+func (srv *DefaultRequest) PostXMLWithTLS(ctx context.Context, url string, data any, ca, key string) ([]byte, error) {
 	xmlData, err := xml.Marshal(data)
 	if err != nil {
 		return nil, err
 	}
-	client, err := httpWithTLS(ca, key)
+	client, err := srv.httpWithTLS(ca, key)
 	if err != nil {
 		return nil, err
 	}

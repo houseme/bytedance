@@ -13,13 +13,71 @@ Bytedance Mini Program Douyin Mini Program bytedance microapp SDK
 
 Enter your repo. directory and execute following command:
 ```bash
-go get -u -v github.com/houseme/bytedance
+go get -u -v github.com/houseme/bytedance@main
 ```
 
 ### Limitation
 
 ```
 golang version >= 1.20
+```
+
+### Usage
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    
+    "github.com/houseme/bytedance"
+    "github.com/houseme/bytedance/config"
+    "github.com/houseme/bytedance/credential"
+    "github.com/houseme/bytedance/utility/cache"
+    "github.com/houseme/bytedance/utility/logger"
+    "github.com/houseme/bytedance/utility/request"
+)
+
+func main() {
+    var ctx = context.Background()
+    wc := bytedance.New(ctx)
+    cfg := config.New(
+        ctx,
+        config.WithClientKey(""),
+        config.WithClientSecret(""),
+        config.WithRedirectURL(""),
+        config.WithLogger(logger.NewDefaultLogger()),
+        config.WithRequest(request.NewDefaultRequest()),
+        config.WithCache(cache.NewRedis(ctx, cache.NewDefaultRedisOpts())),
+        config.WithScopes(""),
+        config.WithSalt(""),
+    )
+    
+    // 获取小程序实例
+    miniProgram, err := wc.MiniProgram(ctx, cfg)
+    if err != nil {
+        panic(err)
+    }
+    auth := miniProgram.GetAuthorize()
+    // 获取用户授权
+    var accessToken credential.AccessToken
+    if accessToken, err = auth.GetAccessToken(ctx, "code"); err != nil {
+        panic(err)
+    }
+    fmt.Println(accessToken)
+    
+    // 创建二维码
+    qrcode := miniProgram.GetQrcode()
+    
+    // 获取小程序码
+    schema := miniProgram.GetSchema()
+    
+    // 获取链接
+    link := miniProgram.GetLink()
+
+}
+
 ```
 
 ### License

@@ -21,6 +21,9 @@
 package schema
 
 import (
+	"context"
+	"encoding/json"
+
 	"github.com/houseme/bytedance/credential"
 	"github.com/houseme/bytedance/utility/base"
 )
@@ -97,12 +100,45 @@ type QuerySchemaQuotaData struct {
 
 // Schema create schema
 type Schema struct {
-	*credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // New create schema
 func New(cfg *credential.ContextConfig) *Schema {
 	return &Schema{
-		ContextConfig: cfg,
+		ctxCfg: cfg,
 	}
+}
+
+// Generate generate schema
+func (s *Schema) Generate(ctx context.Context, request *GenerateSchemaRequest) (response *GenerateSchemaResponse, err error) {
+	var resp []byte
+	if resp, err = s.ctxCfg.Request().PostJSON(ctx, generateSchemaURL, request); err != nil {
+		return
+	}
+	response = new(GenerateSchemaResponse)
+	err = json.Unmarshal(resp, &response)
+	return
+}
+
+// Query query schema
+func (s *Schema) Query(ctx context.Context, request *QuerySchemaRequest) (response *QuerySchemaResponse, err error) {
+	var resp []byte
+	if resp, err = s.ctxCfg.Request().PostJSON(ctx, querySchemaURL, request); err != nil {
+		return
+	}
+	response = new(QuerySchemaResponse)
+	err = json.Unmarshal(resp, &response)
+	return
+}
+
+// QueryQuota query schema quota
+func (s *Schema) QueryQuota(ctx context.Context, request *QuerySchemaQuotaRequest) (response *QuerySchemaQuotaResponse, err error) {
+	var resp []byte
+	if resp, err = s.ctxCfg.Request().PostJSON(ctx, querySchemaQuota, request); err != nil {
+		return
+	}
+	response = new(QuerySchemaQuotaResponse)
+	err = json.Unmarshal(resp, &response)
+	return
 }
