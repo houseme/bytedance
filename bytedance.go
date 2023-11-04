@@ -21,94 +21,72 @@
 package bytedance
 
 import (
-	"context"
-
-	"github.com/houseme/bytedance/config"
-	"github.com/houseme/bytedance/miniprogram"
-	"github.com/houseme/bytedance/payment"
-	"github.com/houseme/bytedance/utility/cache"
-	"github.com/houseme/bytedance/utility/logger"
-	"github.com/houseme/bytedance/utility/request"
+    "context"
+    
+    "github.com/houseme/bytedance/config"
+    "github.com/houseme/bytedance/miniprogram"
+    "github.com/houseme/bytedance/utility/cache"
+    "github.com/houseme/bytedance/utility/logger"
+    "github.com/houseme/bytedance/utility/request"
 )
 
 const (
-	version = "0.0.5"
+    version = "0.0.5"
 )
 
 // Bytedance 字节系开放平台
 type Bytedance struct {
-	cache   cache.Cache
-	request request.Request
-	logger  logger.ILogger
+    cache   cache.Cache
+    request request.Request
+    logger  logger.ILogger
 }
 
 // New 初始化字节系开放平台
 func New(ctx context.Context) *Bytedance {
-	return &Bytedance{
-		cache:   cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
-		request: request.NewDefaultRequest(),
-		logger:  logger.NewDefaultLogger(),
-	}
+    return &Bytedance{
+        cache:   cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
+        request: request.NewDefaultRequest(),
+        logger:  logger.NewDefaultLogger(),
+    }
 }
 
 // Version return version no
 func Version() string {
-	return version
+    return version
 }
 
 // SetCache 设置缓存
 func (b *Bytedance) SetCache(cache cache.Cache) {
-	b.cache = cache
+    b.cache = cache
 }
 
 // SetRequest 设置请求
 func (b *Bytedance) SetRequest(request request.Request) {
-	b.request = request
+    b.request = request
 }
 
 // SetLogger 设置日志
 func (b *Bytedance) SetLogger(logger logger.ILogger) {
-	b.logger = logger
+    b.logger = logger
 }
 
 // MiniProgram mini program
 func (b *Bytedance) MiniProgram(ctx context.Context, cfg *config.Config) (*miniprogram.MicroApp, error) {
-	if cfg == nil {
-		cfg = config.New(ctx)
-	}
-
-	if cfg.Cache() == nil {
-		cfg.SetCache(b.cache)
-	}
-
-	if cfg.Request() == nil {
-		cfg.SetRequest(b.request)
-	}
-
-	if cfg.Logger() == nil {
-		cfg.SetLogger(b.logger)
-	}
-
-	return miniprogram.New(ctx, cfg)
-}
-
-// Pay create payment
-func (b *Bytedance) Pay(ctx context.Context, cfg *config.Config) (*payment.Pay, error) {
-	if cfg == nil {
-		cfg = config.New(ctx)
-	}
-
-	if cfg.Cache() == nil {
-		cfg.SetCache(b.cache)
-	}
-
-	if cfg.Request() == nil {
-		cfg.SetRequest(b.request)
-	}
-
-	if cfg.Logger() == nil {
-		cfg.SetLogger(b.logger)
-	}
-
-	return payment.NewPay(ctx, cfg)
+    if cfg == nil {
+        cfg = config.New(ctx)
+    }
+    
+    if cfg.Cache() == nil {
+        cfg.SetCache(b.cache)
+    }
+    
+    if cfg.Request() == nil {
+        cfg.SetRequest(b.request)
+    }
+    
+    if cfg.Logger() == nil {
+        cfg.SetLogger(b.logger)
+    }
+    
+    return miniprogram.New(ctx, cfg)
 }

@@ -34,6 +34,7 @@ type Config struct {
 	clientSecret string
 	redirectURL  string
 	scopes       string
+	token        string
 	salt         string // 支付密钥值
 	cache        cache.Cache
 	request      request.Request
@@ -45,6 +46,7 @@ type options struct {
 	ClientSecret string
 	RedirectURL  string
 	Scopes       string
+	Token        string
 	Salt         string // 支付密钥值
 	Cache        cache.Cache
 	Logger       logger.ILogger
@@ -79,6 +81,13 @@ func WithRedirectURL(redirectURL string) Option {
 func WithScopes(scopes string) Option {
 	return func(o *options) {
 		o.Scopes = scopes
+	}
+}
+
+// WithToken set token
+func WithToken(token string) Option {
+	return func(o *options) {
+		o.Token = token
 	}
 }
 
@@ -126,6 +135,8 @@ func New(ctx context.Context, opts ...Option) *Config {
 		clientSecret: op.ClientSecret,
 		redirectURL:  op.RedirectURL,
 		scopes:       op.Scopes,
+		salt:         op.Salt,
+		token:        op.Token,
 		request:      op.Request,
 		logger:       op.Logger,
 		cache:        op.Cache,
@@ -162,14 +173,21 @@ func (cfg *Config) SetSalt(salt string) *Config {
 	return cfg
 }
 
+// SetToken 设置 token
+func (cfg *Config) SetToken(token string) *Config {
+	cfg.token = token
+	return cfg
+}
+
 // NewConfig new config
-func NewConfig(ctx context.Context, clientKey, clientSecret, redirectURL, scopes, salt string) *Config {
+func NewConfig(ctx context.Context, clientKey, clientSecret, redirectURL, scopes, salt, token string) *Config {
 	return &Config{
 		clientKey:    clientKey,
 		clientSecret: clientSecret,
 		redirectURL:  redirectURL,
 		scopes:       scopes,
 		salt:         salt,
+		token:        token,
 		cache:        cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
 		request:      request.NewDefaultRequest(),
 		logger:       logger.NewDefaultLogger(),
@@ -212,6 +230,11 @@ func (cfg *Config) RedirectURL() string {
 // Scopes 获取 scopes
 func (cfg *Config) Scopes() string {
 	return cfg.scopes
+}
+
+// Token 获取 token
+func (cfg *Config) Token() string {
+	return cfg.token
 }
 
 // Salt 获取 salt

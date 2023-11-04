@@ -49,12 +49,12 @@ func NewAuthorize(ctxCfg *credential.ContextConfig) *Authorize {
 	}
 }
 
-// GetRedirectURL 获取授权码的 url 地址
+// GetRedirectURL 获取授权码的 URL 地址
 func (a *Authorize) GetRedirectURL(_ context.Context, state string) string {
 	return fmt.Sprintf(redirectOauthURL, a.ClientKey(), a.Scopes(), url.QueryEscape(a.RedirectURL()), state)
 }
 
-// GetSilenceOauthURL 获取静默授权码的 url 地址
+// GetSilenceOauthURL 获取静默授权码的 URL 地址
 func (a *Authorize) GetSilenceOauthURL(_ context.Context, state string) string {
 	return fmt.Sprintf(silenceOauthURL, a.ClientKey(), url.QueryEscape(a.RedirectURL()), state)
 }
