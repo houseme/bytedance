@@ -23,6 +23,7 @@ import (
     "context"
     "testing"
     
+    "github.com/houseme/bytedance/payment/domain"
     "github.com/houseme/bytedance/utility/logger"
 )
 
@@ -55,6 +56,27 @@ func TestConcatenateSignSource(t *testing.T) {
                 logger: logger.NewDefaultLogger(),
             },
             want: "2001ff1c8ffa0f6b4bfb592133a84294",
+        },
+        {
+            name: "TestConcatenateSignSource",
+            args: args{
+                ctx: context.Background(),
+                // {"app_id":"tta2e4d4593dd752cc01","out_order_no":"509428213924556800","total_amount":5990,"subject":"充值：59.9元","body":"充值：59.9元","valid_time":7200,"sign":"f0ff2bd2339d4aa076e54a42cf6bf46e","cp_extra":"20231106180550.952","disable_msg":0}
+                data: domain.CreateOrderRequest{
+                    AppID:           "tta2e4d4593dd752cc01",
+                    OutOrderNo:      "509428213924556800",
+                    TotalAmount:     5990,
+                    Subject:         "充值59.9元",
+                    Body:            "充值59.9元",
+                    ValidTime:       7200,
+                    CpExtra:         "20231106180550.952",
+                    DisableMsg:      0,
+                    ExpandOrderInfo: nil,
+                },
+                salt:   "n5NZ1sQb8euPHV7BsPxARQ",
+                logger: logger.NewDefaultLogger(),
+            },
+            want: "86f4368908b0cbb470b35a60cd68ae41",
         },
     }
     for _, tt := range tests {

@@ -116,6 +116,11 @@ func RequestSign(_ context.Context, data interface{}, salt string) string {
             if k == OtherSettleParams || k == AppID || k == ThirdPartyID || k == Sign {
                 continue
             }
+            
+            if reflect.ValueOf(v.Field(i).Interface()).Kind() == reflect.Ptr && reflect.ValueOf(v.Field(i).Interface()).IsNil() {
+                continue
+            }
+            
             value := strings.TrimSpace(fmt.Sprintf("%v", v.Field(i).Interface()))
             if strings.HasPrefix(value, "\"") && strings.HasSuffix(value, "\"") && len(value) > 1 {
                 value = value[1 : len(value)-1]
@@ -124,6 +129,7 @@ func RequestSign(_ context.Context, data interface{}, salt string) string {
             if value == "" || value == "null" {
                 continue
             }
+            fmt.Printf("%s=%s \n", k, value)
             paramsArr = append(paramsArr, value)
         }
     }
