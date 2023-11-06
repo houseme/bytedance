@@ -35,6 +35,7 @@ const (
 
 // Config 抖音开放平台的配置信息
 type Config struct {
+    version        string
     cacheKeyPrefix string
     clientKey      string
     clientSecret   string
@@ -159,6 +160,12 @@ func New(ctx context.Context, opts ...Option) *Config {
     }
 }
 
+// SetVersion 设置 version
+func (cfg *Config) SetVersion(version string) *Config {
+    cfg.version = version
+    return cfg
+}
+
 // SetCacheKeyPrefix 设置 cacheKeyPrefix
 func (cfg *Config) SetCacheKeyPrefix(cacheKeyPrefix string) *Config {
     cfg.cacheKeyPrefix = cacheKeyPrefix
@@ -232,6 +239,11 @@ func (cfg *Config) SetRequest(request request.Request) *Config {
 func (cfg *Config) SetLogger(logger logger.ILogger) *Config {
     cfg.logger = logger
     return cfg
+}
+
+// Version 获取 version
+func (cfg *Config) Version() string {
+    return cfg.version
 }
 
 // CacheKeyPrefix 获取 cacheKeyPrefix

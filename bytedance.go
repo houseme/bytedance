@@ -91,6 +91,10 @@ func (b *Bytedance) initConfig(ctx context.Context, cfg *config.Config) *config.
         cfg.SetLogger(b.logger)
     }
     
+    if cfg.Version() == "" {
+        cfg.SetVersion(b.Version)
+    }
+    
     return cfg
 }
 
