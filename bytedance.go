@@ -73,8 +73,8 @@ func (b *Bytedance) SetLogger(logger logger.ILogger) {
     b.logger = logger
 }
 
-// MiniProgram mini program
-func (b *Bytedance) MiniProgram(ctx context.Context, cfg *config.Config) (*miniprogram.MicroApp, error) {
+// initConfig 初始化配置
+func (b *Bytedance) initConfig(ctx context.Context, cfg *config.Config) *config.Config {
     if cfg == nil {
         cfg = config.New(ctx)
     }
@@ -91,26 +91,15 @@ func (b *Bytedance) MiniProgram(ctx context.Context, cfg *config.Config) (*minip
         cfg.SetLogger(b.logger)
     }
     
-    return miniprogram.New(ctx, cfg)
+    return cfg
+}
+
+// MiniProgram mini program
+func (b *Bytedance) MiniProgram(ctx context.Context, cfg *config.Config) (*miniprogram.MicroApp, error) {
+    return miniprogram.New(ctx, b.initConfig(ctx, cfg))
 }
 
 // Pay create payment
 func (b *Bytedance) Pay(ctx context.Context, cfg *config.Config) (*payment.Pay, error) {
-    if cfg == nil {
-        cfg = config.New(ctx)
-    }
-    
-    if cfg.Cache() == nil {
-        cfg.SetCache(b.cache)
-    }
-    
-    if cfg.Request() == nil {
-        cfg.SetRequest(b.request)
-    }
-    
-    if cfg.Logger() == nil {
-        cfg.SetLogger(b.logger)
-    }
-    
-    return payment.NewPay(ctx, cfg)
+    return payment.NewPay(ctx, b.initConfig(ctx, cfg))
 }
