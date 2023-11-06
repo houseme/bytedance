@@ -6,12 +6,12 @@
 [![License](https://img.shields.io/github/license/houseme/bytedance.svg?style=flat)](https://github.com/houseme/bytedance)
 ![GitHub go.mod Go version (branch)](https://img.shields.io/github/go-mod/go-version/houseme/bytedance/main)
 
-
 Bytedance Mini Program Douyin Mini Program bytedance microapp SDK
 
 ### Installation
 
 Enter your repo. directory and execute following command:
+
 ```bash
 go get -u -v github.com/houseme/bytedance@main
 ```

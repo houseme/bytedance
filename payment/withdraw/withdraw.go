@@ -17,23 +17,18 @@
  *
  */
 
-// Package logger universal tool package
-package logger
+package withdraw
 
 import (
-    "context"
+    "github.com/houseme/bytedance/credential"
 )
 
-// ILogger is the API interface for logger.
-type ILogger interface {
-    Debug(ctx context.Context, v ...interface{})
-    Debugf(ctx context.Context, format string, v ...interface{})
-    Info(ctx context.Context, v ...interface{})
-    Infof(ctx context.Context, format string, v ...interface{})
-    Warning(ctx context.Context, v ...interface{})
-    Warningf(ctx context.Context, format string, v ...interface{})
-    Error(ctx context.Context, v ...interface{})
-    Errorf(ctx context.Context, format string, v ...interface{})
-    Fatal(ctx context.Context, v ...interface{})
-    Fatalf(ctx context.Context, format string, v ...interface{})
+// Withdraw merchant accounts withdraw
+type Withdraw struct {
+    ctxCfg *credential.ContextConfig
+}
+
+// NewWithdraw init
+func NewWithdraw(cfg *credential.ContextConfig) *Withdraw {
+    return &Withdraw{ctxCfg: cfg}
 }

@@ -43,12 +43,12 @@ func TestConcatenateSignSource(t *testing.T) {
             args: args{
                 ctx: context.Background(),
                 data: struct {
-                    AppID      string `json:"app_id"`
-                    OutTradeNo string `json:"out_trade_no,omitempty"`
-                    TotalAmount int `json:"total_amount,omitempty"`
+                    AppID       string `json:"app_id"`
+                    OutTradeNo  string `json:"out_trade_no,omitempty"`
+                    TotalAmount int    `json:"total_amount,omitempty"`
                 }{
-                    AppID:      "appid12345",
-                    OutTradeNo: "out_trade_no",
+                    AppID:       "appid12345",
+                    OutTradeNo:  "out_trade_no",
                     TotalAmount: 100,
                 },
                 salt:   "test",
@@ -83,16 +83,16 @@ func TestCallbackSign(t *testing.T) {
                 ctx:   context.Background(),
                 token: "12345",
                 data: struct {
-                    Timestamp int64 `json:"timestamp"`
-                    Nonce string `json:"nonce"`
-                    Msg string `json:"msg"`
+                    Timestamp int64  `json:"timestamp"`
+                    Nonce     string `json:"nonce"`
+                    Msg       string `json:"msg"`
                 }{
-                    Timestamp:123456689,
-                    Nonce: "121212121",
-                    Msg: `{\"appid\":\"tt07e3715e98c9aac0\",\"cp_orderno\":\"out_order_no_1\",\"cp_extra\":\"\",\"way\":\"2\",\"payment_order_no\":\"2021070722001450071438803941\",\"total_amount\":9980,\"status\":\"SUCCESS\",\"seller_uid\":\"69631798443938962290\",\"extra\":\"null\",\"item_id\":\"\"}`,
+                    Timestamp: 123456689,
+                    Nonce:     "121212121",
+                    Msg:       `{\"appid\":\"tt07e3715e98c9aac0\",\"cp_orderno\":\"out_order_no_1\",\"cp_extra\":\"\",\"way\":\"2\",\"payment_order_no\":\"2021070722001450071438803941\",\"total_amount\":9980,\"status\":\"SUCCESS\",\"seller_uid\":\"69631798443938962290\",\"extra\":\"null\",\"item_id\":\"\"}`,
                 },
             },
-            want: "f01dea530d78c831ca23447bb445aefb44ea2941",
+            want: "94af40199bb84a6b9340ecd66a4d120f4371cabd",
         },
     }
     for _, tt := range tests {

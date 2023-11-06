@@ -27,7 +27,6 @@ import (
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/miniprogram/authorize"
     "github.com/houseme/bytedance/miniprogram/link"
-    "github.com/houseme/bytedance/miniprogram/payment"
     "github.com/houseme/bytedance/miniprogram/qrcode"
     "github.com/houseme/bytedance/miniprogram/schema"
     "github.com/houseme/bytedance/utility/base"
@@ -97,9 +96,4 @@ func (ma *MicroApp) GetLink() *link.Link {
 // GetSchema 获取小程序 schema
 func (ma *MicroApp) GetSchema() *schema.Schema {
     return schema.New(ma.ctxCfg)
-}
-
-// GetPay 获取支付
-func (ma *MicroApp) GetPay() (*payment.Pay, error) {
-    return payment.NewPay(ma.ctxCfg.Config)
 }

@@ -21,238 +21,265 @@
 package config
 
 import (
-	"context"
+    "context"
+    
+    "github.com/houseme/bytedance/utility/cache"
+    "github.com/houseme/bytedance/utility/logger"
+    "github.com/houseme/bytedance/utility/request"
+)
 
-	"github.com/houseme/bytedance/utility/cache"
-	"github.com/houseme/bytedance/utility/logger"
-	"github.com/houseme/bytedance/utility/request"
+const (
+    // CacheKeyPrefix 抖音 open cache key 前缀
+    CacheKeyPrefix = "bytedance_douyin_lite"
 )
 
 // Config 抖音开放平台的配置信息
 type Config struct {
-	clientKey    string
-	clientSecret string
-	redirectURL  string
-	scopes       string
-	token        string
-	salt         string // 支付密钥值
-	cache        cache.Cache
-	request      request.Request
-	logger       logger.ILogger
+    cacheKeyPrefix string
+    clientKey      string
+    clientSecret   string
+    redirectURL    string
+    scopes         string
+    token          string
+    salt           string // 支付密钥值
+    cache          cache.Cache
+    request        request.Request
+    logger         logger.ILogger
 }
 
 type options struct {
-	ClientKey    string
-	ClientSecret string
-	RedirectURL  string
-	Scopes       string
-	Token        string
-	Salt         string // 支付密钥值
-	Cache        cache.Cache
-	Logger       logger.ILogger
-	Request      request.Request
+    CacheKeyPrefix string
+    ClientKey      string
+    ClientSecret   string
+    RedirectURL    string
+    Scopes         string
+    Token          string
+    Salt           string // 支付密钥值
+    Cache          cache.Cache
+    Logger         logger.ILogger
+    Request        request.Request
 }
 
 // Option micro app option
 type Option func(*options)
 
+// WithCacheKeyPrefix set cacheKeyPrefix
+func WithCacheKeyPrefix(cacheKeyPrefix string) Option {
+    return func(o *options) {
+        o.CacheKeyPrefix = cacheKeyPrefix
+    }
+}
+
 // WithClientKey set clientKey
 func WithClientKey(clientKey string) Option {
-	return func(o *options) {
-		o.ClientKey = clientKey
-	}
+    return func(o *options) {
+        o.ClientKey = clientKey
+    }
 }
 
 // WithClientSecret set clientSecret
 func WithClientSecret(clientSecret string) Option {
-	return func(o *options) {
-		o.ClientSecret = clientSecret
-	}
+    return func(o *options) {
+        o.ClientSecret = clientSecret
+    }
 }
 
 // WithRedirectURL set redirectURL
 func WithRedirectURL(redirectURL string) Option {
-	return func(o *options) {
-		o.RedirectURL = redirectURL
-	}
+    return func(o *options) {
+        o.RedirectURL = redirectURL
+    }
 }
 
 // WithScopes set scopes
 func WithScopes(scopes string) Option {
-	return func(o *options) {
-		o.Scopes = scopes
-	}
+    return func(o *options) {
+        o.Scopes = scopes
+    }
 }
 
 // WithToken set token
 func WithToken(token string) Option {
-	return func(o *options) {
-		o.Token = token
-	}
+    return func(o *options) {
+        o.Token = token
+    }
 }
 
 // WithSalt set salt
 func WithSalt(salt string) Option {
-	return func(o *options) {
-		o.Salt = salt
-	}
+    return func(o *options) {
+        o.Salt = salt
+    }
 }
 
 // WithLogger set logger
 func WithLogger(logger logger.ILogger) Option {
-	return func(o *options) {
-		o.Logger = logger
-	}
+    return func(o *options) {
+        o.Logger = logger
+    }
 }
 
 // WithRequest set request
 func WithRequest(request request.Request) Option {
-	return func(o *options) {
-		o.Request = request
-	}
+    return func(o *options) {
+        o.Request = request
+    }
 }
 
 // WithCache set cache
 func WithCache(cache cache.Cache) Option {
-	return func(o *options) {
-		o.Cache = cache
-	}
+    return func(o *options) {
+        o.Cache = cache
+    }
 }
 
 // New create config
 func New(ctx context.Context, opts ...Option) *Config {
-	op := options{
-		Logger:  logger.NewDefaultLogger(),
-		Request: request.NewDefaultRequest(),
-		Cache:   cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
-	}
-	for _, option := range opts {
-		option(&op)
-	}
+    op := options{
+        Logger:         logger.NewDefaultLogger(),
+        Request:        request.NewDefaultRequest(),
+        Cache:          cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
+        CacheKeyPrefix: CacheKeyPrefix,
+    }
+    for _, option := range opts {
+        option(&op)
+    }
+    
+    return &Config{
+        cacheKeyPrefix: op.CacheKeyPrefix,
+        clientKey:      op.ClientKey,
+        clientSecret:   op.ClientSecret,
+        redirectURL:    op.RedirectURL,
+        scopes:         op.Scopes,
+        salt:           op.Salt,
+        token:          op.Token,
+        request:        op.Request,
+        logger:         op.Logger,
+        cache:          op.Cache,
+    }
+}
 
-	return &Config{
-		clientKey:    op.ClientKey,
-		clientSecret: op.ClientSecret,
-		redirectURL:  op.RedirectURL,
-		scopes:       op.Scopes,
-		salt:         op.Salt,
-		token:        op.Token,
-		request:      op.Request,
-		logger:       op.Logger,
-		cache:        op.Cache,
-	}
+// SetCacheKeyPrefix 设置 cacheKeyPrefix
+func (cfg *Config) SetCacheKeyPrefix(cacheKeyPrefix string) *Config {
+    cfg.cacheKeyPrefix = cacheKeyPrefix
+    return cfg
 }
 
 // SetClientKey 设置 clientKey
 func (cfg *Config) SetClientKey(clientKey string) *Config {
-	cfg.clientKey = clientKey
-	return cfg
+    cfg.clientKey = clientKey
+    return cfg
 }
 
 // SetClientSecret 设置 clientSecret
 func (cfg *Config) SetClientSecret(clientSecret string) *Config {
-	cfg.clientSecret = clientSecret
-	return cfg
+    cfg.clientSecret = clientSecret
+    return cfg
 }
 
 // SetRedirectURL 设置 redirectURL
 func (cfg *Config) SetRedirectURL(redirectURL string) *Config {
-	cfg.redirectURL = redirectURL
-	return cfg
+    cfg.redirectURL = redirectURL
+    return cfg
 }
 
 // SetScopes 设置 scopes
 func (cfg *Config) SetScopes(scopes string) *Config {
-	cfg.scopes = scopes
-	return cfg
+    cfg.scopes = scopes
+    return cfg
 }
 
 // SetSalt 设置 salt
 func (cfg *Config) SetSalt(salt string) *Config {
-	cfg.salt = salt
-	return cfg
+    cfg.salt = salt
+    return cfg
 }
 
 // SetToken 设置 token
 func (cfg *Config) SetToken(token string) *Config {
-	cfg.token = token
-	return cfg
+    cfg.token = token
+    return cfg
 }
 
 // NewConfig new config
 func NewConfig(ctx context.Context, clientKey, clientSecret, redirectURL, scopes, salt, token string) *Config {
-	return &Config{
-		clientKey:    clientKey,
-		clientSecret: clientSecret,
-		redirectURL:  redirectURL,
-		scopes:       scopes,
-		salt:         salt,
-		token:        token,
-		cache:        cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
-		request:      request.NewDefaultRequest(),
-		logger:       logger.NewDefaultLogger(),
-	}
+    return &Config{
+        clientKey:    clientKey,
+        clientSecret: clientSecret,
+        redirectURL:  redirectURL,
+        scopes:       scopes,
+        salt:         salt,
+        token:        token,
+        cache:        cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
+        request:      request.NewDefaultRequest(),
+        logger:       logger.NewDefaultLogger(),
+    }
 }
 
 // SetCache 设置缓存
 func (cfg *Config) SetCache(cache cache.Cache) *Config {
-	cfg.cache = cache
-	return cfg
+    cfg.cache = cache
+    return cfg
 }
 
 // SetRequest 设置请求
 func (cfg *Config) SetRequest(request request.Request) *Config {
-	cfg.request = request
-	return cfg
+    cfg.request = request
+    return cfg
 }
 
 // SetLogger 设置日志
 func (cfg *Config) SetLogger(logger logger.ILogger) *Config {
-	cfg.logger = logger
-	return cfg
+    cfg.logger = logger
+    return cfg
+}
+
+// CacheKeyPrefix 获取 cacheKeyPrefix
+func (cfg *Config) CacheKeyPrefix() string {
+    return cfg.cacheKeyPrefix
 }
 
 // ClientKey 获取 clientKey
 func (cfg *Config) ClientKey() string {
-	return cfg.clientKey
+    return cfg.clientKey
 }
 
 // ClientSecret 获取 clientSecret
 func (cfg *Config) ClientSecret() string {
-	return cfg.clientSecret
+    return cfg.clientSecret
 }
 
 // RedirectURL 获取 redirectURL
 func (cfg *Config) RedirectURL() string {
-	return cfg.redirectURL
+    return cfg.redirectURL
 }
 
 // Scopes 获取 scopes
 func (cfg *Config) Scopes() string {
-	return cfg.scopes
+    return cfg.scopes
 }
 
 // Token 获取 token
 func (cfg *Config) Token() string {
-	return cfg.token
+    return cfg.token
 }
 
 // Salt 获取 salt
 func (cfg *Config) Salt() string {
-	return cfg.salt
+    return cfg.salt
 }
 
 // Cache 获取 cache
 func (cfg *Config) Cache() cache.Cache {
-	return cfg.cache
+    return cfg.cache
 }
 
 // Request 获取 request
 func (cfg *Config) Request() request.Request {
-	return cfg.request
+    return cfg.request
 }
 
 // Logger 获取 logger
 func (cfg *Config) Logger() logger.ILogger {
-	return cfg.logger
+    return cfg.logger
 }

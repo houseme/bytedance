@@ -20,53 +20,53 @@
 package helper
 
 import (
-	"testing"
+    "testing"
 )
 
 func TestRandomStr(t *testing.T) {
-	type args struct {
-		n int
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "TestRandomStr-1",
-			args: args{
-				n: 2,
-			},
-			want: "1",
-		},
-		{
-			name: "TestRandomStr-5",
-			args: args{
-				n: 5,
-			},
-			want: "1",
-		},
-		{
-			name: "TestRandomStr-10",
-			args: args{
-				n: 10,
-			},
-			want: "1",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := RandomStr(tt.args.n); got == tt.want {
-				t.Errorf("RandomStr() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+    type args struct {
+        n int
+    }
+    tests := []struct {
+        name string
+        args args
+        want string
+    }{
+        {
+            name: "TestRandomStr-1",
+            args: args{
+                n: 2,
+            },
+            want: "1",
+        },
+        {
+            name: "TestRandomStr-5",
+            args: args{
+                n: 5,
+            },
+            want: "1",
+        },
+        {
+            name: "TestRandomStr-10",
+            args: args{
+                n: 10,
+            },
+            want: "1",
+        },
+    }
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            if got := RandomStr(tt.args.n); got == tt.want {
+                t.Errorf("RandomStr() = %v, want %v", got, tt.want)
+            }
+        })
+    }
 }
 
 // benchmark
 func BenchmarkRandomStr(b *testing.B) {
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		RandomStr(6)
-	}
+    b.ResetTimer()
+    for i := 0; i < b.N; i++ {
+        RandomStr(6)
+    }
 }

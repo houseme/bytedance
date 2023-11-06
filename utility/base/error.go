@@ -21,53 +21,53 @@
 package base
 
 import (
-	"fmt"
+    "fmt"
 )
 
 // CommonError 抖音返回的通用错误。
 type CommonError struct {
-	ErrCode int64  `json:"error_code"`
-	ErrMsg  string `json:"description"`
+    ErrCode int64  `json:"error_code"`
+    ErrMsg  string `json:"description"`
 }
 
 // CommonErrorExtra 抖音返回的错误额外信息。
 type CommonErrorExtra struct {
-	LogID string `json:"logid"`
-	Now   int64  `json:"now"`
+    LogID string `json:"logid"`
+    Now   int64  `json:"now"`
 }
 
 var (
-	// ErrConfigNotFound config not found
-	ErrConfigNotFound = Error{
-		ErrCode: 10404,
-		ErrMsg:  "config not found",
-	}
-	// ErrConfigKeyValueEmpty client key not found
-	errConfigKeyValueEmpty = Error{
-		ErrCode: 10404,
-		ErrMsg:  "params key not found",
-	}
+    // ErrConfigNotFound config didn't find
+    ErrConfigNotFound = Error{
+        ErrCode: 10404,
+        ErrMsg:  "config not found",
+    }
+    // ErrConfigKeyValueEmpty client key not found
+    errConfigKeyValueEmpty = Error{
+        ErrCode: 10404,
+        ErrMsg:  "params key not found",
+    }
 )
 
 // ErrConfigKeyValueEmpty params key not found
 func ErrConfigKeyValueEmpty(key string) error {
-	if key == "" {
-		return errConfigKeyValueEmpty
-	}
-	return Error{
-		ErrCode: 10404,
-		ErrMsg:  fmt.Sprintf("%s not found", key),
-	}
+    if key == "" {
+        return errConfigKeyValueEmpty
+    }
+    return Error{
+        ErrCode: 10404,
+        ErrMsg:  fmt.Sprintf("%s not found", key),
+    }
 }
 
 // Error base error
 type Error struct {
-	ErrCode int    `json:"errCode"`
-	ErrMsg  string `json:"errMsg"`
-	Err     error  `json:"err"`
+    ErrCode int    `json:"errCode"`
+    ErrMsg  string `json:"errMsg"`
+    Err     error  `json:"err"`
 }
 
 // String return the error string
 func (e Error) Error() string {
-	return fmt.Sprintf("errCode: %d, errMsg: %s, err: %s", e.ErrCode, e.ErrMsg, e.Err)
+    return fmt.Sprintf("errCode: %d, errMsg: %s, err: %s", e.ErrCode, e.ErrMsg, e.Err)
 }

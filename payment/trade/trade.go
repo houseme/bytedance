@@ -17,52 +17,30 @@
  *
  */
 
-// Package payment payment
-package payment
+package trade
 
 import (
     "context"
     "encoding/json"
     
-    "github.com/houseme/bytedance/config"
     "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/miniprogram/payment/constant"
-    "github.com/houseme/bytedance/miniprogram/payment/domain"
-    "github.com/houseme/bytedance/utility/base"
+    "github.com/houseme/bytedance/payment/constant"
+    "github.com/houseme/bytedance/payment/domain"
     "github.com/houseme/bytedance/utility/helper"
 )
 
-// Pay payment
-type Pay struct {
+// Trade creates trade relation
+type Trade struct {
     ctxCfg *credential.ContextConfig
 }
 
-// NewPay create payment
-func NewPay(cfg *config.Config) (*Pay, error) {
-    if cfg == nil {
-        return nil, base.ErrConfigNotFound
-    }
-    if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
-    }
-    if cfg.Salt() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("salt")
-    }
-    
-    if cfg.Token() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("token")
-    }
-    
-    return &Pay{
-        ctxCfg: &credential.ContextConfig{
-            Config:            cfg,
-            AccessTokenHandle: credential.NewDefaultAccessToken(context.Background(), cfg),
-        },
-    }, nil
+// NewTrade create trade relation
+func NewTrade(cfg *credential.ContextConfig) *Trade {
+    return &Trade{ctxCfg: cfg}
 }
 
 // CreatePay 创建支付
-func (p *Pay) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (resp *domain.CreateOrderResponse, err error) {
+func (p *Trade) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (resp *domain.CreateOrderResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, "CreatePay req:", req)
     req.AppID = p.ctxCfg.Config.ClientKey()
     req.Sign = helper.RequestSign(ctx, *req, p.ctxCfg.Config.Salt())
@@ -77,7 +55,7 @@ func (p *Pay) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (re
 }
 
 // QueryPay 查询支付
-func (p *Pay) QueryPay(ctx context.Context, req *domain.QueryOrderRequest) (resp *domain.QueryOrderResponse, err error) {
+func (p *Trade) QueryPay(ctx context.Context, req *domain.QueryOrderRequest) (resp *domain.QueryOrderResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, "QueryPay req:", req)
     req.AppID = p.ctxCfg.Config.ClientKey()
     req.Sign = helper.RequestSign(ctx, *req, p.ctxCfg.Config.Salt())
@@ -88,5 +66,19 @@ func (p *Pay) QueryPay(ctx context.Context, req *domain.QueryOrderRequest) (resp
     }
     resp = new(domain.QueryOrderResponse)
     err = json.Unmarshal(response, &resp)
+    return
+}
+
+// AsyncNotify 异步通知
+func (p *Trade) AsyncNotify(ctx context.Context, req *domain.AsyncRequest) (resp *domain.AsyncResponse, err error) {
+    p.ctxCfg.Logger().Debug(ctx, " async notify request params:", req)
+    var sign = helper.CallbackSign(ctx, p.ctxCfg.Config.Token(), *req)
+    resp = &domain.AsyncResponse{
+        ErrNo:   constant.FailedToCheckTheSignature,
+        ErrTips: "success",
+    }
+    if sign != req.MsgSignature {
+        resp.ErrNo = constant.FailedToCheckTheSignature
+    }
     return
 }

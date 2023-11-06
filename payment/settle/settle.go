@@ -17,23 +17,18 @@
  *
  */
 
-// Package logger universal tool package
-package logger
+package settle
 
 import (
-    "context"
+    "github.com/houseme/bytedance/credential"
 )
 
-// ILogger is the API interface for logger.
-type ILogger interface {
-    Debug(ctx context.Context, v ...interface{})
-    Debugf(ctx context.Context, format string, v ...interface{})
-    Info(ctx context.Context, v ...interface{})
-    Infof(ctx context.Context, format string, v ...interface{})
-    Warning(ctx context.Context, v ...interface{})
-    Warningf(ctx context.Context, format string, v ...interface{})
-    Error(ctx context.Context, v ...interface{})
-    Errorf(ctx context.Context, format string, v ...interface{})
-    Fatal(ctx context.Context, v ...interface{})
-    Fatalf(ctx context.Context, format string, v ...interface{})
+// Settle merchant account settle
+type Settle struct {
+    ctxCfg *credential.ContextConfig
+}
+
+// NewSettle init
+func NewSettle(cfg *credential.ContextConfig) *Settle {
+    return &Settle{ctxCfg: cfg}
 }

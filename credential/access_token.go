@@ -20,12 +20,12 @@
 package credential
 
 import (
-	"context"
+    "context"
 )
 
 // AccessTokenHandle AccessToken 接口
 type AccessTokenHandle interface {
-	GetAccessToken(ctx context.Context, openID string) (accessToken string, err error)
-	SetAccessToken(ctx context.Context, accessToken *AccessToken) (err error)
-	GetClientToken(ctx context.Context) (clientToken *ClientToken, err error)
+    GetAccessToken(ctx context.Context, openID string) (accessToken string, err error)
+    SetAccessToken(ctx context.Context, accessToken *AccessToken) (err error)
+    GetClientToken(ctx context.Context) (clientToken *ClientToken, err error)
 }

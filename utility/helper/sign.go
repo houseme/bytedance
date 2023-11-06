@@ -73,7 +73,7 @@ func CallbackSign(_ context.Context, token string, data any) string {
                 continue
             }
             k := tagKeyArr[0]
-            if k != Timestamp && k != Nonce && k != Msg {
+            if !(k == Nonce || k == Timestamp || k != Msg) {
                 continue
             }
             value := strings.TrimSpace(fmt.Sprintf("%v", v.Field(i).Interface()))

@@ -35,8 +35,8 @@ type AsyncRequest struct {
     Type         string `json:"type"`
 }
 
-// AsyncData async data
-type AsyncData struct {
+// AsyncPaymentData async payment data
+type AsyncPaymentData struct {
     AppID          string `json:"appid"`
     CpOrderNo      string `json:"cp_orderno"`
     CpExtra        string `json:"cp_extra"`
@@ -48,6 +48,50 @@ type AsyncData struct {
     Extra          string `json:"extra"`
     ItemID         string `json:"item_id"`
     OrderID        string `json:"order_id"`
+}
+
+// AsyncSettleData async settle data
+type AsyncSettleData struct {
+    AppID           string `json:"app_id"`
+    CpSettleNo      string `json:"cp_settle_no"`
+    CpExtra         string `json:"cp_extra"`
+    Status          string `json:"status"`
+    Rake            int    `json:"rake"`
+    Commission      int    `json:"commission"`
+    SettleDetail    string `json:"settle_detail"`
+    SettledAt       int    `json:"settled_at"`
+    Message         string `json:"message"`
+    OrderID         string `json:"order_id" description:"分账对应原支付单单号"`
+    ChannelSettleID string `json:"channel_settle_id" description:"渠道结算单号"`
+    SettleAmount    int    `json:"settle_amount" description:"参与分账总金额，单位为分"`
+    SettleNo        string `json:"settle_no" description:"分账对应平台单号"`
+    OutOrderNo      string `json:"out_order_no" description:"开发者侧的订单号。只能是数字、大小写字母_-*且在同一个 app_id 下唯一"`
+    IsAutoSettle    bool   `json:"is_auto_settle" description:"是否自动结算"`
+}
+
+// AsyncRefundData async refund data
+type AsyncRefundData struct {
+    AppID        string `json:"appid"`
+    CpRefundNo   string `json:"cp_refundno"`
+    CpExtra      string `json:"cp_extra"`
+    Status       string `json:"status"`
+    RefundAmount int    `json:"refund_amount"`
+    IsAllSettled bool   `json:"is_all_settled"`
+    RefundedAt   int    `json:"refunded_at"`
+    Message      string `json:"message"`
+    OrderID      string `json:"order_id"`
+    RefundNo     string `json:"refund_no"`
+}
+
+// AsyncWithdrawData async withdraw data
+type AsyncWithdrawData struct {
+    Status     string `json:"status"`
+    Extra      string `json:"extra"`
+    Message    string `json:"message"`
+    WithdrawAt int    `json:"withdraw_at"`
+    OrderID    string `json:"order_id"`
+    OutOrderID string `json:"out_order_id"`
+    ChOrderID  string `json:"ch_order_id"`
 }
 
 // CreateOrderRequest create order request

@@ -22,7 +22,7 @@ package base
 
 // CommonResponse 抖音返回的通用错误。
 type CommonResponse struct {
-	ErrMsg string `json:"err_msg"`
-	LogID  string `json:"log_id"`
-	ErrNo  int    `json:"err_no"`
+    ErrMsg string `json:"err_msg"`
+    LogID  string `json:"log_id"`
+    ErrNo  int    `json:"err_no"`
 }

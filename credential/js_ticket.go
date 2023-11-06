@@ -20,11 +20,11 @@
 package credential
 
 import (
-	"context"
+    "context"
 )
 
 // JsTicketHandle js ticket 获取
 type JsTicketHandle interface {
-	// GetTicket 获取 ticket
-	GetTicket(ctx context.Context, accessToken string) (ticket string, err error)
+    // GetTicket 获取 ticket
+    GetTicket(ctx context.Context, accessToken string) (ticket string, err error)
 }

@@ -21,25 +21,25 @@
 package request
 
 import (
-	"context"
+    "context"
 )
 
 // Request http request interface
 type Request interface {
-	Get(ctx context.Context, url string) ([]byte, error)
-	Post(ctx context.Context, url string, data []byte) ([]byte, error)
-	PostJSON(ctx context.Context, url string, data any) ([]byte, error)
-	PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error)
-	PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
-	PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
-	PostXML(ctx context.Context, url string, data any) ([]byte, error)
-	PostXMLWithTLS(ctx context.Context, url string, data any, ca, key string) ([]byte, error)
+    Get(ctx context.Context, url string) ([]byte, error)
+    Post(ctx context.Context, url string, data []byte) ([]byte, error)
+    PostJSON(ctx context.Context, url string, data any) ([]byte, error)
+    PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error)
+    PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
+    PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) ([]byte, error)
+    PostXML(ctx context.Context, url string, data any) ([]byte, error)
+    PostXMLWithTLS(ctx context.Context, url string, data any, ca, key string) ([]byte, error)
 }
 
 // MultipartFormField multipart form field
 type MultipartFormField struct {
-	IsFile    bool   `json:"isFile"`
-	Value     []byte `json:"value"`
-	FieldName string `json:"fieldName"`
-	FileName  string `json:"fileName"`
+    IsFile    bool   `json:"isFile"`
+    Value     []byte `json:"value"`
+    FieldName string `json:"fieldName"`
+    FileName  string `json:"fileName"`
 }
