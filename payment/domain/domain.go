@@ -38,16 +38,18 @@ type AsyncRequest struct {
 // AsyncPaymentData async payment data
 type AsyncPaymentData struct {
     AppID          string `json:"appid"`
-    CpOrderNo      string `json:"cp_orderno"`
-    CpExtra        string `json:"cp_extra"`
-    Way            string `json:"way"`
-    PaymentOrderNo string `json:"payment_order_no"`
-    TotalAmount    int    `json:"total_amount"`
-    Status         string `json:"status"`
-    SellerUID      string `json:"seller_uid"`
+    CpOrderNo      string `json:"cp_orderno" description:"开发者侧的订单号。只能是数字、大小写字母_-*且在同一个 app_id 下唯一"`
+    CpExtra        string `json:"cp_extra" description:"预下单时开发者传入字段"`
+    Way            string `json:"way" description:"支付渠道，1-微信支付，2-支付宝支付，10-抖音支付"`
+    ChannelNo      string `json:"channel_no" description:"支付渠道侧单号 (抖音平台请求下游渠道微信或支付宝时传入的单号)"`
+    PaymentOrderNo string `json:"payment_order_no" description:"支付渠道侧 PC 单号，支付页面可见 (微信支付宝侧的订单号)"`
+    TotalAmount    int    `json:"total_amount" description:"订单总金额，单位为分"`
+    Status         string `json:"status" description:"固定 SUCCESS"`
+    SellerUID      string `json:"seller_uid" description:"该笔交易卖家商户号"`
     Extra          string `json:"extra"`
-    ItemID         string `json:"item_id"`
-    OrderID        string `json:"order_id"`
+    ItemID         string `json:"item_id" description:"订单来源视频对应视频 ID"`
+    OrderID        string `json:"order_id" description:"抖音侧订单号"`
+    PaidAt         int    `json:"paid_at" description:"支付时间，Unix 时间戳，10 位，整型数"`
 }
 
 // AsyncSettleData async settle data

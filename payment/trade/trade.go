@@ -22,6 +22,7 @@ package trade
 import (
     "context"
     "encoding/json"
+    "strings"
     
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/payment/constant"
@@ -42,9 +43,12 @@ func NewTrade(cfg *credential.ContextConfig) *Trade {
 // CreatePay 创建支付
 func (p *Trade) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (resp *domain.CreateOrderResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, "CreatePay req:", req)
-    req.AppID = p.ctxCfg.Config.ClientKey()
-    req.Sign = helper.RequestSign(ctx, *req, p.ctxCfg.Config.Salt())
-    
+    if strings.TrimSpace(req.AppID) == "" {
+        req.AppID = p.ctxCfg.Config.ClientKey()
+    }
+    if strings.TrimSpace(req.Sign) == "" {
+        req.Sign = helper.RequestSign(ctx, *req, p.ctxCfg.Config.Salt())
+    }
     var response []byte
     if response, err = p.ctxCfg.Request().PostJSON(ctx, constant.CreateOrder, req); err != nil {
         return nil, err
@@ -57,8 +61,12 @@ func (p *Trade) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (
 // QueryPay 查询支付
 func (p *Trade) QueryPay(ctx context.Context, req *domain.QueryOrderRequest) (resp *domain.QueryOrderResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, "QueryPay req:", req)
-    req.AppID = p.ctxCfg.Config.ClientKey()
-    req.Sign = helper.RequestSign(ctx, *req, p.ctxCfg.Config.Salt())
+    if strings.TrimSpace(req.AppID) == "" {
+        req.AppID = p.ctxCfg.Config.ClientKey()
+    }
+    if strings.TrimSpace(req.Sign) == "" {
+        req.Sign = helper.RequestSign(ctx, *req, p.ctxCfg.Config.Salt())
+    }
     
     var response []byte
     if response, err = p.ctxCfg.Request().PostJSON(ctx, constant.QueryOrder, req); err != nil {
