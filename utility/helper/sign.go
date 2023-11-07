@@ -73,14 +73,13 @@ func CallbackSign(_ context.Context, token string, data any) string {
                 continue
             }
             k := tagKeyArr[0]
-            if !(k == Nonce || k == Timestamp || k != Msg) {
+            if !(k == Nonce || k == Timestamp || k == Msg) {
                 continue
             }
             value := strings.TrimSpace(fmt.Sprintf("%v", v.Field(i).Interface()))
             if value == "" || value == "null" {
                 continue
             }
-            
             strArr = append(strArr, value)
         }
     }

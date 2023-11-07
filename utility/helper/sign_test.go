@@ -100,7 +100,7 @@ func TestCallbackSign(t *testing.T) {
         want string
     }{
         {
-            name: "TestCallbackSign",
+            name: "TestCallbackSign-1",
             args: args{
                 ctx:   context.Background(),
                 token: "12345",
@@ -114,7 +114,24 @@ func TestCallbackSign(t *testing.T) {
                     Msg:       `{\"appid\":\"tt07e3715e98c9aac0\",\"cp_orderno\":\"out_order_no_1\",\"cp_extra\":\"\",\"way\":\"2\",\"payment_order_no\":\"2021070722001450071438803941\",\"total_amount\":9980,\"status\":\"SUCCESS\",\"seller_uid\":\"69631798443938962290\",\"extra\":\"null\",\"item_id\":\"\"}`,
                 },
             },
-            want: "94af40199bb84a6b9340ecd66a4d120f4371cabd",
+            want: "f01dea530d78c831ca23447bb445aefb44ea2941",
+        },
+        {
+            name: "TestCallbackSign-2",
+            args: args{
+                ctx:   context.Background(),
+                token: "XTaSqbuSx5Mxxxxx",
+                data: struct {
+                    Timestamp int64  `json:"timestamp"`
+                    Nonce     string `json:"nonce"`
+                    Msg       string `json:"msg"`
+                }{
+                    Timestamp: 1699323852,
+                    Nonce:     "5069",
+                    Msg:       "{\"appid\":\"tta2e4d4593dd752cc01\",\"cp_orderno\":\"509674359901237248\",\"cp_extra\":\"20231107102356.988\",\"way\":\"2\",\"channel_no\":\"2023110722001478031451493029\",\"channel_gateway_no\":\"\",\"payment_order_no\":\"DPS2311071023579038593541272896\",\"out_channel_order_no\":\"2023110722001478031451493029\",\"total_amount\":1,\"status\":\"SUCCESS\",\"seller_uid\":\"72886065940053875560\",\"extra\":\"\",\"item_id\":\"\",\"paid_at\":1699323852,\"message\":\"\",\"order_id\":\"N7298540284277819658\",\"ec_pay_trade_no\":\"DTPP2311071023579038592558232896\"}",
+                },
+            },
+            want: "8af88d7063a638da5d20d0996e9efc6f899929a3",
         },
     }
     for _, tt := range tests {
