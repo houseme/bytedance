@@ -83,7 +83,7 @@ func (p *Trade) AsyncNotify(ctx context.Context, req *domain.AsyncRequest) (resp
     var sign = helper.CallbackSign(ctx, p.ctxCfg.Config.Token(), *req)
     resp = &domain.AsyncResponse{
         ErrNo:   constant.FailedToCheckTheSignature,
-        ErrTips: "success",
+        ErrTips: "failed",
     }
     if sign != req.MsgSignature {
         resp.ErrNo = constant.FailedToCheckTheSignature
