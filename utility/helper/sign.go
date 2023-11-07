@@ -85,8 +85,12 @@ func CallbackSign(_ context.Context, token string, data any) string {
     }
     
     sort.Strings(strArr)
-    h := sha1.New()
-    h.Write([]byte(strings.Join(strArr, "")))
+    
+    var (
+        signStr = strings.Join(strArr, "")
+        h       = sha1.New()
+    )
+    h.Write([]byte(signStr))
     return fmt.Sprintf("%x", h.Sum(nil))
 }
 
