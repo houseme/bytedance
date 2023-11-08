@@ -25,7 +25,7 @@ type OrderSyncRequest struct {
     AccessToken string `json:"access_token" description:"服务端 API 调用标识，通过 getAccessToken 获取"`
     ExtShopID   string `json:"ext_shop_id,omitempty"`
     AppName     string `json:"app_name" description:"做订单展示的字节系 app 名称，目前为固定值“douyin”"`
-    OpenID      string `json:"openId" description:"小程序用户的 open_id，通过 code2Session 获取"`
+    OpenID      string `json:"open_id" description:"小程序用户的 open_id，通过 code2Session 获取"`
     OrderDetail any    `json:"order_detail" description:"json string，根据不同订单类型有不同的结构体，请参见 order_detail 字段说明（json string）"`
     OrderStatus int64  `json:"order_status" description:"普通小程序订单订单状态，POI 订单可以忽略 0：待支付 1：已支付 2：已取消（用户主动取消或者超时未支付导致的关单）4：已核销（核销状态是整单核销，即一笔订单买了 3 个券，核销是指 3 个券核销的整单）5：退款中 6：已退款 8：退款失败 注意：普通小程序订单必传，担保支付分账依赖该状态"`
     OrderType   int64  `json:"order_type" description:"订单类型，枚举值:0：普通小程序订单（非 POI 订单）9101：团购券订单（POI 订单）9001：景区门票订单（POI 订单）"`
@@ -50,7 +50,7 @@ type OrderDetailGeneral struct {
     Amount     int64                     `json:"amount" description:"订单商品总数"`
     TotalPrice int64                     `json:"total_price" description:"订单总价，单位为分"`
     DetailURL  string                    `json:"detail_url" description:"小程序订单详情页 path，长度<=1024 byte (备注：该路径需要保证在小程序内配置过，相对路径即可）"`
-    ItemList   []OrderDetailGeneralItem `json:"itemList" description:"订单商品列表"`
+    ItemList   []OrderDetailGeneralItem `json:"item_list" description:"订单商品列表"`
 }
 
 // OrderDetailGeneralItem order detail general item
