@@ -50,7 +50,7 @@ type OrderDetailGeneral struct {
     Amount     int64                     `json:"amount" description:"订单商品总数"`
     TotalPrice int64                     `json:"total_price" description:"订单总价，单位为分"`
     DetailURL  string                    `json:"detail_url" description:"小程序订单详情页 path，长度<=1024 byte (备注：该路径需要保证在小程序内配置过，相对路径即可）"`
-    ItemList   []*OrderDetailGeneralItem `json:"itemList" description:"订单商品列表"`
+    ItemList   []OrderDetailGeneralItem `json:"itemList" description:"订单商品列表"`
 }
 
 // OrderDetailGeneralItem order detail general item
