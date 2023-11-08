@@ -46,8 +46,8 @@ func (s *Sync) PushOrder(ctx context.Context, req *domain.OrderSyncRequest) (res
     if req == nil {
         return nil, base.ErrRequestIsEmpty
     }
-    var clientToken *credential.ClientToken
-    if clientToken, err = s.ctxCfg.GetClientToken(ctx); err != nil {
+    var clientToken *credential.ServerAccessToken
+    if clientToken, err = s.ctxCfg.GetServerAccessToken(ctx); err != nil {
         return nil, err
     }
     if clientToken == nil {

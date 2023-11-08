@@ -28,4 +28,5 @@ type AccessTokenHandle interface {
     GetAccessToken(ctx context.Context, openID string) (accessToken string, err error)
     SetAccessToken(ctx context.Context, accessToken *AccessToken) (err error)
     GetClientToken(ctx context.Context) (clientToken *ClientToken, err error)
+    GetServerAccessToken(ctx context.Context) (serverAccessToken *ServerAccessToken, err error)
 }
