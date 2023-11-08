@@ -214,10 +214,14 @@ type ClientToken struct {
 
 // ServerAccessToken client token
 type ServerAccessToken struct {
-    ErrNo       int64  `json:"err_no"`
-    ErrTips     string `json:"err_tips"`
     AccessToken string `json:"access_token"`
     ExpiresIn   int64  `json:"expires_in"`
+}
+
+type serverAccessTokenRes struct {
+    ErrNo   int64             `json:"err_no"`
+    ErrTips string            `json:"err_tips"`
+    Data    ServerAccessToken `json:"data"`
 }
 
 type clientTokenRes struct {
@@ -349,17 +353,18 @@ func (t *DefaultAccessToken) GetServerAccessToken(ctx context.Context) (serverAc
     if response, err = t.request.Post(ctx, serverAccessTokenURL, data); err != nil {
         return
     }
-    serverAccessToken = &ServerAccessToken{}
-    if err = json.Unmarshal(response, serverAccessToken); err != nil {
+    var result serverAccessTokenRes
+    if err = json.Unmarshal(response, &result); err != nil {
         return
     }
     
-    if serverAccessToken.ErrNo != 0 {
-        err = fmt.Errorf("get client token error : errcode=%v , errmsg=%v", serverAccessToken.ErrNo, serverAccessToken.ErrTips)
+    if result.ErrNo != 0 {
+        err = fmt.Errorf("get client token error : errcode=%v , errmsg=%v", result.ErrNo, result.ErrTips)
         return
     }
-    if err = t.SetServerAccessToken(ctx, serverAccessToken); err != nil {
+    if err = t.SetServerAccessToken(ctx, &result.Data); err != nil {
         return
     }
+    serverAccessToken = &result.Data
     return
 }
