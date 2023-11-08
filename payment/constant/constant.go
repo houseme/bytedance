@@ -108,3 +108,9 @@ const (
     // FailedToCheckTheSignature 验签失败
     FailedToCheckTheSignature = 400
 )
+
+// 应用名称
+const (
+    // SyncAppName 小程序
+    SyncAppName = "douyin"
+)
