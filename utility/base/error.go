@@ -47,6 +47,17 @@ var (
         ErrCode: 10404,
         ErrMsg:  "params key not found",
     }
+    
+    // ErrRequestIsEmpty request is empty
+    ErrRequestIsEmpty = Error{
+        ErrCode: 10404,
+        ErrMsg:  "request is empty",
+    }
+    
+    ErrClientTokenIsEmpty = Error{
+        ErrCode: 10404,
+        ErrMsg:  "client token is empty",
+    }
 )
 
 // ErrConfigKeyValueEmpty params key not found

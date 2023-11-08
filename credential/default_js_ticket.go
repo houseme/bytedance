@@ -31,7 +31,7 @@ import (
     "github.com/houseme/bytedance/utility/request"
 )
 
-// 获取 ticket 的 url
+// 获取 ticket 的 URL
 const getTicketURL = "https://open.douyin.com/js/getticket?access_token=%s"
 
 // DefaultJsTicket 默认获取 js ticket 方法

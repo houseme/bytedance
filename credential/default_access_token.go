@@ -34,9 +34,9 @@ import (
 )
 
 const (
-    refreshTokenURL      = "https://open.douyin.com/oauth/oauth/refresh_token?client_key=%s&grant_type=refresh_token&refresh_token=%s"
-    renewRefreshTokenURL = "https://open.douyin.com/oauth/oauth/renew_refresh_token?client_key=%s&refresh_token=%s"
-    clientTokenURL       = "https://open.douyin.com/oauth/oauth/client_token?client_key=%s&client_secret=%s&grant_type=client_credential"
+    refreshTokenURL      = "https://open.douyin.com/oauth/refresh_token?client_key=%s&grant_type=refresh_token&refresh_token=%s"
+    renewRefreshTokenURL = "https://open.douyin.com/oauth/renew_refresh_token?client_key=%s&refresh_token=%s"
+    clientTokenURL       = "https://open.douyin.com/oauth/client_token?client_key=%s&client_secret=%s&grant_type=client_credential"
 )
 
 // DefaultAccessToken 默认 AccessToken 获取
@@ -118,17 +118,28 @@ func (t *DefaultAccessToken) GetAccessToken(ctx context.Context, openID string) 
 // SetAccessToken 设置 access_token
 func (t *DefaultAccessToken) SetAccessToken(ctx context.Context, accessToken *AccessToken) (err error) {
     // access token cache
-    if err = t.cache.Set(ctx, fmt.Sprintf("%s_access_token_%s", t.cacheKeyPrefix, accessToken.OpenID), accessToken.AccessToken, time.Duration(accessToken.ExpiresIn-1500)*time.Second); err != nil {
+    if err = t.cache.Set(ctx, t.accessTokenKey(accessToken.OpenID), accessToken.AccessToken, time.Duration(accessToken.ExpiresIn-1500)*time.Second); err != nil {
         return
     }
     
     // refresh access token cache
-    if err = t.cache.Set(ctx, fmt.Sprintf("%s_refresh_token_%s", t.cacheKeyPrefix, accessToken.OpenID), accessToken.RefreshToken, time.Duration(accessToken.RefreshTokenIn-1500)*time.Second); err != nil {
+    if err = t.cache.Set(ctx, t.refreshAccessTokenKey(accessToken.OpenID), accessToken.RefreshToken, time.Duration(accessToken.RefreshTokenIn-1500)*time.Second); err != nil {
         return
     }
     
     return
 }
+
+// accessTokenKey 获取 access_token 的 key
+func (t *DefaultAccessToken) accessTokenKey(openID string) string {
+    return fmt.Sprintf("%s_access_token_%s", t.cacheKeyPrefix, openID)
+}
+
+// refreshAccessTokenKey refresh token
+func (t *DefaultAccessToken) refreshAccessTokenKey(openID string) string {
+    return fmt.Sprintf("%s_refresh_token_%s", t.cacheKeyPrefix, openID)
+}
+
 
 type accessTokenRes struct {
     Message string                `json:"message"`
@@ -208,8 +219,7 @@ type clientTokenRes struct {
 
 // GetClientToken 该接口用于获取接口调用的凭证 client_access_token，主要用于调用不需要用户授权就可以调用的接口。
 func (t *DefaultAccessToken) GetClientToken(ctx context.Context) (clientToken *ClientToken, err error) {
-    accessTokenCacheKey := fmt.Sprintf("%s_client_token__%s", t.cacheKeyPrefix, t.ClientKey)
-    if val := t.cache.Get(ctx, accessTokenCacheKey); val != nil {
+    if val := t.cache.Get(ctx, t.clientTokenKey()); val != nil {
         if accessToken := val.(string); accessToken != "" {
             clientToken = &ClientToken{
                 AccessToken: accessToken,
@@ -223,7 +233,7 @@ func (t *DefaultAccessToken) GetClientToken(ctx context.Context) (clientToken *C
     defer t.accessTokenLock.Unlock()
     
     // 双检，防止重复从微信服务器获取
-    if val := t.cache.Get(ctx, accessTokenCacheKey); val != nil {
+    if val := t.cache.Get(ctx, t.clientTokenKey()); val != nil {
         if accessToken := val.(string); accessToken != "" {
             clientToken = &ClientToken{
                 AccessToken: accessToken,
@@ -242,7 +252,7 @@ func (t *DefaultAccessToken) GetClientToken(ctx context.Context) (clientToken *C
     }
     
     if result.Data.ErrCode != 0 {
-        err = fmt.Errorf("GetUserAccessToken error : errcode=%v , errmsg=%v", result.Data.ErrCode, result.Data.ErrMsg)
+        err = fmt.Errorf("get client token error : errcode=%v , errmsg=%v", result.Data.ErrCode, result.Data.ErrMsg)
         return
     }
     if err = t.SetClientToken(ctx, &result.Data); err != nil {
@@ -255,8 +265,13 @@ func (t *DefaultAccessToken) GetClientToken(ctx context.Context) (clientToken *C
 // SetClientToken 设置 client_token
 func (t *DefaultAccessToken) SetClientToken(ctx context.Context, clientToken *ClientToken) (err error) {
     // access token cache
-    if err = t.cache.Set(ctx, fmt.Sprintf("%s_client_token__%s", t.cacheKeyPrefix, t.ClientKey), clientToken.AccessToken, time.Duration(clientToken.ExpiresIn-1500)*time.Second); err != nil {
+    if err = t.cache.Set(ctx, t.clientTokenKey(), clientToken.AccessToken, time.Duration(clientToken.ExpiresIn-1500)*time.Second); err != nil {
         return
     }
     return
+}
+
+// clientTokenKey 获取 client_token 的 key
+func (t *DefaultAccessToken) clientTokenKey() string {
+    return fmt.Sprintf("%s_client_token_%s", t.cacheKeyPrefix, t.ClientKey)
 }

@@ -27,6 +27,7 @@ import (
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/payment/refund"
     "github.com/houseme/bytedance/payment/settle"
+    "github.com/houseme/bytedance/payment/sync"
     "github.com/houseme/bytedance/payment/trade"
     "github.com/houseme/bytedance/payment/withdraw"
     "github.com/houseme/bytedance/utility/base"
@@ -84,4 +85,9 @@ func (p *Pay) Settle() *settle.Settle {
 // Refund order cash
 func (p *Pay) Refund() *refund.Refund {
     return refund.NewRefund(p.ContextConfig())
+}
+
+// Sync order sync to douyin
+func (p *Pay) Sync() *sync.Sync {
+    return sync.NewSync(p.ContextConfig())
 }
