@@ -303,7 +303,7 @@ func (t *DefaultAccessToken) serverAccessTokenKey() string {
 // SetServerAccessToken 设置 client_token
 func (t *DefaultAccessToken) SetServerAccessToken(ctx context.Context, serverAccessToken *ServerAccessToken) (err error) {
     // access token cache
-    if err = t.cache.Set(ctx, t.clientTokenKey(), serverAccessToken.AccessToken, time.Duration(serverAccessToken.ExpiresIn-1500)*time.Second); err != nil {
+    if err = t.cache.Set(ctx, t.serverAccessTokenKey(), serverAccessToken.AccessToken, time.Duration(serverAccessToken.ExpiresIn-1500)*time.Second); err != nil {
         return
     }
     return
