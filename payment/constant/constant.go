@@ -114,3 +114,14 @@ const (
     // SyncAppName 小程序
     SyncAppName = "douyin"
 )
+
+const (
+    // Alipay 提现渠道枚举值:alipay: 担保支付普通版支付宝，wx: 担保支付普通版微信，hz: 担保支付普通版抖音支付，yzt: 担保支付企业版聚合账户
+    Alipay = "alipay"
+    // Wx 微信
+    Wx = "wx"
+    // Hz 抖音
+    Hz = "hz"
+    // Yzt 聚合账户
+    Yzt = "yzt"
+)

@@ -18,7 +18,7 @@
  */
 
 // Package domain domain
-package domain
+package trade
 
 // AsyncResponse async response
 type AsyncResponse struct {

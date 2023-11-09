@@ -17,7 +17,7 @@
  *
  */
 
-package domain
+package sync
 
 // OrderSyncRequest order sync request
 type OrderSyncRequest struct {
@@ -49,7 +49,7 @@ type OrderDetailGeneral struct {
     Status     string                    `json:"status" description:"订单状态，订单状态，建议采用以下枚举值：待待支付，已支付，已取消，已超时，已核销，退款中。已退款，退款失败"`
     Amount     int64                     `json:"amount" description:"订单商品总数"`
     TotalPrice int64                     `json:"total_price" description:"订单总价，单位为分"`
-    DetailURL  string                    `json:"detail_url" description:"小程序订单详情页 path，长度<=1024 byte (备注：该路径需要保证在小程序内配置过，相对路径即可）"`
+    DetailURL  string                   `json:"detail_url" description:"小程序订单详情页 path，长度<=1024 byte (备注：该路径需要保证在小程序内配置过，相对路径即可）"`
     ItemList   []OrderDetailGeneralItem `json:"item_list" description:"订单商品列表"`
 }
 

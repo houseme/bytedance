@@ -17,6 +17,7 @@
  *
  */
 
+// Package trade order trading
 package trade
 
 import (
@@ -26,7 +27,6 @@ import (
     
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/payment/constant"
-    "github.com/houseme/bytedance/payment/domain"
     "github.com/houseme/bytedance/utility/helper"
 )
 
@@ -41,7 +41,7 @@ func NewTrade(cfg *credential.ContextConfig) *Trade {
 }
 
 // CreatePay 创建支付
-func (p *Trade) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (resp *domain.CreateOrderResponse, err error) {
+func (p *Trade) CreatePay(ctx context.Context, req *CreateOrderRequest) (resp *CreateOrderResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, "CreatePay req:", req)
     if strings.TrimSpace(req.AppID) == "" {
         req.AppID = p.ctxCfg.Config.ClientKey()
@@ -53,13 +53,13 @@ func (p *Trade) CreatePay(ctx context.Context, req *domain.CreateOrderRequest) (
     if response, err = p.ctxCfg.Request().PostJSON(ctx, constant.CreateOrder, req); err != nil {
         return nil, err
     }
-    resp = new(domain.CreateOrderResponse)
+    resp = new(CreateOrderResponse)
     err = json.Unmarshal(response, &resp)
     return
 }
 
 // QueryPay 查询支付
-func (p *Trade) QueryPay(ctx context.Context, req *domain.QueryOrderRequest) (resp *domain.QueryOrderResponse, err error) {
+func (p *Trade) QueryPay(ctx context.Context, req *QueryOrderRequest) (resp *QueryOrderResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, "QueryPay req:", req)
     if strings.TrimSpace(req.AppID) == "" {
         req.AppID = p.ctxCfg.Config.ClientKey()
@@ -72,16 +72,16 @@ func (p *Trade) QueryPay(ctx context.Context, req *domain.QueryOrderRequest) (re
     if response, err = p.ctxCfg.Request().PostJSON(ctx, constant.QueryOrder, req); err != nil {
         return nil, err
     }
-    resp = new(domain.QueryOrderResponse)
+    resp = new(QueryOrderResponse)
     err = json.Unmarshal(response, &resp)
     return
 }
 
 // AsyncNotify 异步通知
-func (p *Trade) AsyncNotify(ctx context.Context, req *domain.AsyncRequest) (resp *domain.AsyncResponse, err error) {
+func (p *Trade) AsyncNotify(ctx context.Context, req *AsyncRequest) (resp *AsyncResponse, err error) {
     p.ctxCfg.Logger().Debug(ctx, " async notify request params:", req)
     var sign = helper.CallbackSign(ctx, p.ctxCfg.Config.Token(), *req)
-    resp = &domain.AsyncResponse{
+    resp = &AsyncResponse{
         ErrNo:   constant.Success,
         ErrTips: "SUCCESS",
     }

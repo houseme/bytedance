@@ -132,7 +132,6 @@ func RequestSign(_ context.Context, data interface{}, salt string) string {
             if value == "" || value == "null" {
                 continue
             }
-            fmt.Printf("%s=%s \n", k, value)
             paramsArr = append(paramsArr, value)
         }
     }

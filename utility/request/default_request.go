@@ -45,7 +45,7 @@ func NewDefaultRequest() *DefaultRequest {
     return &DefaultRequest{}
 }
 
-// Get http get request
+// Get HTTP get request
 func (srv *DefaultRequest) Get(ctx context.Context, url string) ([]byte, error) {
     req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
     if err != nil {
@@ -65,7 +65,7 @@ func (srv *DefaultRequest) Get(ctx context.Context, url string) ([]byte, error) 
     return io.ReadAll(resp.Body)
 }
 
-// Post http post request
+// Post HTTP post request
 func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([]byte, error) {
     req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(data))
     if err != nil {
@@ -85,7 +85,7 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
     return io.ReadAll(resp.Body)
 }
 
-// PostJSON http post json request
+// PostJSON HTTP post JSON request
 func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) ([]byte, error) {
     jsonBuf := new(bytes.Buffer)
     enc := json.NewEncoder(jsonBuf)
@@ -113,7 +113,7 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
     return io.ReadAll(resp.Body)
 }
 
-// PostJSONWithRespContentType http post json request with the response content type
+// PostJSONWithRespContentType HTTP post JSON request with the response content type
 func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error) {
     jsonBuf := new(bytes.Buffer)
     enc := json.NewEncoder(jsonBuf)
@@ -142,12 +142,12 @@ func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url 
     return res, contentType, err
 }
 
-// PostFile http post file request
+// PostFile HTTP post file request
 func (srv *DefaultRequest) PostFile(ctx context.Context, url string, files []MultipartFormField) ([]byte, error) {
     return srv.PostMultipartForm(ctx, url, files)
 }
 
-// PostMultipartForm http post multipart form request
+// PostMultipartForm HTTP post multipart form request
 func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) (resp []byte, err error) {
     bodyBuf := &bytes.Buffer{}
     bodyWriter := multipart.NewWriter(bodyBuf)

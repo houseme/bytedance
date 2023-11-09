@@ -17,48 +17,47 @@
  *
  */
 
-// Package sync order sync to douyin
-package sync
+package account
 
 import (
     "context"
     "encoding/json"
+    "fmt"
+    "strings"
     
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/payment/constant"
     "github.com/houseme/bytedance/utility/base"
+    "github.com/houseme/bytedance/utility/helper"
 )
 
-// Sync sync
-type Sync struct {
+// Account merchant accounts
+type Account struct {
     ctxCfg *credential.ContextConfig
 }
 
-// NewSync init
-func NewSync(cfg *credential.ContextConfig) *Sync {
-    return &Sync{ctxCfg: cfg}
+// NewAccount init
+func NewAccount(cfg *credential.ContextConfig) *Account {
+    return &Account{ctxCfg: cfg}
 }
 
-// PushOrder push order
-// see https://developer.toutiao.com/docs/miniapps/miniplatform/payment/order-sync/order-sync
-func (s *Sync) PushOrder(ctx context.Context, req *OrderSyncRequest) (resp *OrderSyncResponse, err error) {
+// QueryBalance query balance
+func (a *Account) QueryBalance(ctx context.Context, req *QueryMerchantAccountRequest) (res *QueryMerchantAccountResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty
     }
-    var clientToken *credential.ServerAccessToken
-    if clientToken, err = s.ctxCfg.GetServerAccessToken(ctx); err != nil {
-        return nil, err
-    }
-    if clientToken == nil {
-        return nil, base.ErrClientTokenIsEmpty
-    }
-    req.AccessToken = clientToken.AccessToken
     
+    if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
+        req.AppID = a.ctxCfg.Config.ClientKey()
+    }
+    fmt.Println("request:", req)
+    req.Sign = helper.RequestSign(ctx, *req, a.ctxCfg.Config.Salt())
+    fmt.Println("req.Sign:", req.Sign)
     var response []byte
-    if response, err = s.ctxCfg.Request().PostJSON(ctx, constant.OrderPush, *req); err != nil {
+    if response, err = a.ctxCfg.Request().PostJSON(ctx, constant.QueryMerchantBalance, *req); err != nil {
         return nil, err
     }
-    resp = &OrderSyncResponse{}
-    err = json.Unmarshal(response, &resp)
+    res = &QueryMerchantAccountResponse{}
+    err = json.Unmarshal(response, res)
     return
 }
