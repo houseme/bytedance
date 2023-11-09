@@ -28,7 +28,7 @@ import (
     "github.com/houseme/bytedance/payment/account"
     "github.com/houseme/bytedance/payment/refund"
     "github.com/houseme/bytedance/payment/settle"
-    "github.com/houseme/bytedance/payment/sync"
+    "github.com/houseme/bytedance/payment/syncorder"
     "github.com/houseme/bytedance/payment/trade"
     "github.com/houseme/bytedance/payment/withdraw"
     "github.com/houseme/bytedance/utility/base"
@@ -89,8 +89,8 @@ func (p *Pay) Refund() *refund.Refund {
 }
 
 // Sync order sync to douyin
-func (p *Pay) Sync() *sync.Sync {
-    return sync.NewSync(p.ContextConfig())
+func (p *Pay) Sync() *syncorder.Sync {
+    return syncorder.NewSync(p.ContextConfig())
 }
 
 // Account merchant accounts

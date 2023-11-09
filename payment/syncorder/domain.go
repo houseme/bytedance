@@ -17,7 +17,7 @@
  *
  */
 
-package sync
+package syncorder
 
 // OrderSyncRequest order sync request
 type OrderSyncRequest struct {

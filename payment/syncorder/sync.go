@@ -17,8 +17,8 @@
  *
  */
 
-// Package sync order sync to douyin
-package sync
+// Package syncorder order sync to douyin
+package syncorder
 
 import (
     "context"
