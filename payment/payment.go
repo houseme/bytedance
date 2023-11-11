@@ -26,6 +26,7 @@ import (
     "github.com/houseme/bytedance/config"
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/payment/account"
+    "github.com/houseme/bytedance/payment/bill"
     "github.com/houseme/bytedance/payment/refund"
     "github.com/houseme/bytedance/payment/settle"
     "github.com/houseme/bytedance/payment/syncorder"
@@ -96,4 +97,9 @@ func (p *Pay) Sync() *syncorder.Sync {
 // Account merchant accounts
 func (p *Pay) Account() *account.Account {
     return account.NewAccount(p.ContextConfig())
+}
+
+// Bill merchant bill
+func (p *Pay) Bill() *bill.Bill {
+    return bill.NewBill(p.ContextConfig())
 }

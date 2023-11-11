@@ -17,14 +17,14 @@
  *
  */
 
-// Package request http request
+// Package request HTTP request
 package request
 
 import (
     "context"
 )
 
-// Request http request interface
+// Request HTTP request interface
 type Request interface {
     Get(ctx context.Context, url string) ([]byte, error)
     Post(ctx context.Context, url string, data []byte) ([]byte, error)

@@ -56,6 +56,9 @@ const (
     
     // QueryWithdrawOrder query withdraws order
     QueryWithdrawOrder = "https://developer.toutiao.com/api/apps/ecpay/saas/query_withdraw_order"
+    
+    // QueryMerchantBill query merchant bill
+    QueryMerchantBill = "https://developer.toutiao.com/api/apps/bills?"
 )
 
 const (
@@ -124,4 +127,21 @@ const (
     Hz = "hz"
     // Yzt 聚合账户
     Yzt = "yzt"
+)
+
+const (
+    // Payment 支付账单 账单类型，包括 payment:支付账单，settle:分账账单，refund:退款账单，return:退分账账单，withdraw:提现账单，rebate:返佣账单，annual_rebate:年框返佣账单
+    Payment = "payment"
+    // Settle 分账账单
+    Settle = "settle"
+    // Refund 退款账单
+    Refund = "refund"
+    // Return 退分账账单
+    Return = "return"
+    // Withdraw 提现账单
+    Withdraw = "withdraw"
+    // Rebate 返佣账单
+    Rebate = "rebate"
+    // AnnualRebate 年框返佣账单
+    AnnualRebate = "annual_rebate"
 )

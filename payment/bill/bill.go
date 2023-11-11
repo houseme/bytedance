@@ -17,7 +17,8 @@
  *
  */
 
-package account
+// Package bill query merchant bill
+package bill
 
 import (
     "context"
@@ -30,31 +31,35 @@ import (
     "github.com/houseme/bytedance/utility/helper"
 )
 
-// Account merchant accounts
-type Account struct {
+// Bill merchant accounts bill
+type Bill struct {
     ctxCfg *credential.ContextConfig
 }
 
-// NewAccount init
-func NewAccount(cfg *credential.ContextConfig) *Account {
-    return &Account{ctxCfg: cfg}
+// NewBill init
+func NewBill(cfg *credential.ContextConfig) *Bill {
+    return &Bill{ctxCfg: cfg}
 }
 
-// QueryBalance query balance
-func (a *Account) QueryBalance(ctx context.Context, req *QueryMerchantAccountRequest) (res *QueryMerchantAccountResponse, err error) {
+// QueryBill query bill
+func (b *Bill) QueryBill(ctx context.Context, req *QueryBillRequest) (resp *QueryBillResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty
     }
     
     if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
-        req.AppID = a.ctxCfg.Config.ClientKey()
+        req.AppID = b.ctxCfg.Config.ClientKey()
     }
-    req.Sign = helper.RequestSign(ctx, *req, a.ctxCfg.Config.Salt())
-    var response []byte
-    if response, err = a.ctxCfg.Request().PostJSON(ctx, constant.QueryMerchantBalance, *req); err != nil {
+    req.Sign = helper.RequestSign(ctx, *req, b.ctxCfg.Config.Salt())
+    var (
+        values   = req.ToURLValues()
+        response []byte
+    )
+    
+    if response, err = b.ctxCfg.Request().Get(ctx, constant.QueryMerchantBill+values.Encode()); err != nil {
         return nil, err
     }
-    res = &QueryMerchantAccountResponse{}
-    err = json.Unmarshal(response, res)
+    resp = &QueryBillResponse{}
+    err = json.Unmarshal(response, resp)
     return
 }

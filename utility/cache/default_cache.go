@@ -31,7 +31,7 @@ type Redis struct {
     conn redis.UniversalClient
 }
 
-// RedisOpts redis 连接属性
+// RedisOpts Redis 连接属性
 type RedisOpts struct {
     Host        string `yml:"host" json:"host"`
     Password    string `yml:"password" json:"password"`
