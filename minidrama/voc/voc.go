@@ -122,8 +122,8 @@ func (v *Voc) QueryVideoURL(ctx context.Context, req *QueryVideoURLRequest) (res
     return
 }
 
-// BathUploadVideoByURL 批量上传视频
-func (v *Voc) BathUploadVideoByURL(ctx context.Context, req *UploadByURLRequest) (resp *UploadByURLResponse, err error) {
+// BatchUploadVideoByURL 批量上传视频
+func (v *Voc) BatchUploadVideoByURL(ctx context.Context, req *UploadByURLRequest) (resp *UploadByURLResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty
     }

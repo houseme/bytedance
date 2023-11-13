@@ -32,9 +32,12 @@ import (
     "mime/multipart"
     "net/http"
     "os"
+    "strings"
     
     "golang.org/x/crypto/pkcs12"
 )
+
+const accessTokenKey = "accessTokenKey"
 
 // DefaultRequest 默认请求
 type DefaultRequest struct {
@@ -100,6 +103,11 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
         return nil, err
     }
     req.Header.Set("Content-Type", "application/json;charset=utf-8")
+    
+    accessToken := ctxValueToString(ctx, accessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
     resp, err := http.DefaultClient.Do(req)
     if err != nil {
         return nil, err
@@ -127,6 +135,10 @@ func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url 
         return nil, "", err
     }
     req.Header.Set("Content-Type", "application/json;charset=utf-8")
+    accessToken := ctxValueToString(ctx, accessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
     resp, err := http.DefaultClient.Do(req)
     if err != nil {
         return nil, "", err
@@ -191,6 +203,10 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
         return nil, err
     }
     req.Header.Set("Content-Type", contentType)
+    accessToken := ctxValueToString(ctx, accessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
     response, err := http.DefaultClient.Do(req)
     if err != nil {
         return nil, err
@@ -257,6 +273,10 @@ func (srv *DefaultRequest) PostXML(ctx context.Context, url string, data any) ([
         return nil, err
     }
     req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+    accessToken := ctxValueToString(ctx, accessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
     response, err := http.DefaultClient.Do(req)
     if err != nil {
         return nil, err
@@ -289,6 +309,10 @@ func (srv *DefaultRequest) PostXMLWithTLS(ctx context.Context, url string, data 
         return nil, err
     }
     req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+    accessToken := ctxValueToString(ctx, accessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
     response, err := client.Do(req)
     if err != nil {
         return nil, err
@@ -301,4 +325,18 @@ func (srv *DefaultRequest) PostXMLWithTLS(ctx context.Context, url string, data 
         return nil, fmt.Errorf("http code error : uri=%v , statusCode=%v", url, response.StatusCode)
     }
     return io.ReadAll(response.Body)
+}
+
+func ctxValueToString(ctx context.Context, key string) string {
+    val := ctx.Value(key)
+    if val == nil {
+        return ""
+    }
+    
+    strVal, ok := val.(string)
+    if !ok {
+        strVal = fmt.Sprintf("%v", val)
+    }
+    
+    return strVal
 }
