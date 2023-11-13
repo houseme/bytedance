@@ -58,6 +58,11 @@ var (
         ErrCode: 10404,
         ErrMsg:  "client token is empty",
     }
+    
+    ErrClientAccessTokenIsEmpty = Error{
+        ErrCode: 10404,
+        ErrMsg:  "client access token is empty",
+    }
 )
 
 // ErrConfigKeyValueEmpty params key not found
