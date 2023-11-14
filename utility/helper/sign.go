@@ -27,7 +27,6 @@ import (
     "reflect"
     "sort"
     "strings"
-    "unicode"
 )
 
 const (
@@ -139,20 +138,4 @@ func RequestSign(_ context.Context, data interface{}, salt string) string {
     paramsArr = append(paramsArr, salt)
     sort.Strings(paramsArr)
     return fmt.Sprintf("%x", md5.Sum([]byte(strings.Join(paramsArr, "&"))))
-}
-
-// UcFirst 首字母大些
-func UcFirst(str string) string {
-    for i, v := range str {
-        return string(unicode.ToUpper(v)) + str[i+1:]
-    }
-    return ""
-}
-
-// LcFirst 首字母小写
-func LcFirst(str string) string {
-    for i, v := range str {
-        return string(unicode.ToLower(v)) + str[i+1:]
-    }
-    return ""
 }

@@ -33,6 +33,11 @@ const (
     CacheKeyPrefix = "bytedance_douyin_lite"
 )
 
+const (
+    // AccessTokenKey AccessToken Key
+    AccessTokenKey = "accessTokenKey"
+)
+
 // Config 抖音开放平台的配置信息
 type Config struct {
     version        string
@@ -138,7 +143,7 @@ func WithCache(cache cache.Cache) Option {
 func New(ctx context.Context, opts ...Option) *Config {
     op := options{
         Logger:         logger.NewDefaultLogger(),
-        Request:        request.NewDefaultRequest(),
+        Request:        request.NewDefaultRequest(AccessTokenKey),
         Cache:          cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
         CacheKeyPrefix: CacheKeyPrefix,
     }
@@ -218,7 +223,7 @@ func NewConfig(ctx context.Context, clientKey, clientSecret, redirectURL, scopes
         salt:         salt,
         token:        token,
         cache:        cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
-        request:      request.NewDefaultRequest(),
+        request:      request.NewDefaultRequest(AccessTokenKey),
         logger:       logger.NewDefaultLogger(),
     }
 }

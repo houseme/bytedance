@@ -37,15 +37,14 @@ import (
     "golang.org/x/crypto/pkcs12"
 )
 
-const accessTokenKey = "accessTokenKey"
-
 // DefaultRequest 默认请求
 type DefaultRequest struct {
+    AccessTokenKey string
 }
 
 // NewDefaultRequest 实例化
-func NewDefaultRequest() *DefaultRequest {
-    return &DefaultRequest{}
+func NewDefaultRequest(accessTokenKey string) *DefaultRequest {
+    return &DefaultRequest{AccessTokenKey: accessTokenKey}
 }
 
 // Get HTTP get request
@@ -54,6 +53,12 @@ func (srv *DefaultRequest) Get(ctx context.Context, url string) ([]byte, error) 
     if err != nil {
         return nil, err
     }
+    
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
+    
     client := http.Client{}
     resp, err := client.Do(req)
     if err != nil {
@@ -74,6 +79,12 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
     if err != nil {
         return nil, err
     }
+    
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
+    if strings.TrimSpace(accessToken) != "" {
+        req.Header.Set("access-token", accessToken)
+    }
+    
     client := http.Client{}
     resp, err := client.Do(req)
     if err != nil {
@@ -104,7 +115,7 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
     }
     req.Header.Set("Content-Type", "application/json;charset=utf-8")
     
-    accessToken := ctxValueToString(ctx, accessTokenKey)
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set("access-token", accessToken)
     }
@@ -135,7 +146,7 @@ func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url 
         return nil, "", err
     }
     req.Header.Set("Content-Type", "application/json;charset=utf-8")
-    accessToken := ctxValueToString(ctx, accessTokenKey)
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set("access-token", accessToken)
     }
@@ -203,7 +214,7 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
         return nil, err
     }
     req.Header.Set("Content-Type", contentType)
-    accessToken := ctxValueToString(ctx, accessTokenKey)
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set("access-token", accessToken)
     }
@@ -273,7 +284,7 @@ func (srv *DefaultRequest) PostXML(ctx context.Context, url string, data any) ([
         return nil, err
     }
     req.Header.Set("Content-Type", "application/xml;charset=utf-8")
-    accessToken := ctxValueToString(ctx, accessTokenKey)
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set("access-token", accessToken)
     }
@@ -309,7 +320,7 @@ func (srv *DefaultRequest) PostXMLWithTLS(ctx context.Context, url string, data 
         return nil, err
     }
     req.Header.Set("Content-Type", "application/xml;charset=utf-8")
-    accessToken := ctxValueToString(ctx, accessTokenKey)
+    accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set("access-token", accessToken)
     }

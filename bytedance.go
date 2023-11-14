@@ -48,7 +48,7 @@ type Bytedance struct {
 func New(ctx context.Context) *Bytedance {
     return &Bytedance{
         cache:   cache.NewRedis(ctx, cache.NewDefaultRedisOpts()),
-        request: request.NewDefaultRequest(),
+        request: request.NewDefaultRequest(config.AccessTokenKey),
         logger:  logger.NewDefaultLogger(),
         Version: version,
     }

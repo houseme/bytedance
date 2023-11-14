@@ -34,6 +34,7 @@ import (
     "sort"
     "strings"
     "time"
+    "unicode"
 )
 
 // GenSign 生成签名
@@ -228,4 +229,20 @@ func RSADecryptBase64(privateKey string, cryptoText string) ([]byte, error) {
         return nil, err
     }
     return RSADecrypt(privateKey, encryptedData)
+}
+
+// UcFirst 首字母大些
+func UcFirst(str string) string {
+    for i, v := range str {
+        return string(unicode.ToUpper(v)) + str[i+1:]
+    }
+    return ""
+}
+
+// LcFirst 首字母小写
+func LcFirst(str string) string {
+    for i, v := range str {
+        return string(unicode.ToLower(v)) + str[i+1:]
+    }
+    return ""
 }

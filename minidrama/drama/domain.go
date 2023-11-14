@@ -19,8 +19,8 @@
 
 package drama
 
-// ResourceUploadImageRequest 资源上传 图片
-type ResourceUploadImageRequest struct {
+// UploadImageRequest 资源上传 图片
+type UploadImageRequest struct {
     ResourceType int        `json:"resource_type"`
     MaAppID      string     `json:"ma_app_id"`
     ImageMeta    *ImageMeta `json:"image_meta"`
@@ -31,8 +31,8 @@ type ImageMeta struct {
     URL string `json:"url"`
 }
 
-// ResourceUploadImageResponse 资源上传 图片
-type ResourceUploadImageResponse struct {
+// UploadImageResponse 资源上传 图片
+type UploadImageResponse struct {
     Data   *ImageData `json:"data"`
     ErrMsg string     `json:"err_msg"`
     ErrNo  int        `json:"err_no"`
@@ -50,8 +50,8 @@ type ImageData struct {
     ResourceType int          `json:"resource_type"`
 }
 
-// ResourceUploadVideoRequest 资源上传 视频
-type ResourceUploadVideoRequest struct {
+// UploadVideoRequest 资源上传 视频
+type UploadVideoRequest struct {
     ResourceType int        `json:"resource_type"`
     MaAppID      string     `json:"ma_app_id"`
     VideoMeta    *VideoMeta `json:"video_meta"`
@@ -67,8 +67,8 @@ type VideoMeta struct {
     DyCloudID   string `json:"dy_cloud_id,omitempty" description:"抖音云的视频 ID，用于从抖音云同步视频到内容库，该字段有值时，URL、use_dy_cloud 无实际作用"`
 }
 
-// ResourceUploadVideoResponse 资源上传 视频
-type ResourceUploadVideoResponse struct {
+// UploadVideoResponse 资源上传 视频
+type UploadVideoResponse struct {
     ErrMsg string     `json:"err_msg"`
     ErrNo  int        `json:"err_no"`
     LogID  string     `json:"log_id"`

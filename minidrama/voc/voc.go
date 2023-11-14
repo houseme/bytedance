@@ -23,6 +23,7 @@ package voc
 import (
     "context"
     "encoding/json"
+    "fmt"
     "strings"
     
     "github.com/houseme/bytedance/credential"
@@ -73,7 +74,14 @@ func (v *Voc) QueryVideoList(ctx context.Context, req *QueryListRequest) (resp *
     }
     
     resp = &QueryListResponse{}
-    err = json.Unmarshal(response, &resp)
+    if err = json.Unmarshal(response, &resp); err != nil {
+        return nil, err
+    }
+    
+    if resp != nil && resp.ErrNo != 0 {
+        err = fmt.Errorf("query video errCode: %d, error:%s", resp.ErrNo, resp.ErrMsg)
+        return nil, err
+    }
     
     return
 }
