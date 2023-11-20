@@ -76,6 +76,17 @@ func ErrConfigKeyValueEmpty(key string) error {
     }
 }
 
+// ErrParamKeyValueEmpty params key not found
+func ErrParamKeyValueEmpty(key string) error {
+    if key == "" {
+        return errConfigKeyValueEmpty
+    }
+    return Error{
+        ErrCode: 10404,
+        ErrMsg:  fmt.Sprintf("params %s value is empty", key),
+    }
+}
+
 // Error base error
 type Error struct {
     ErrCode int    `json:"errCode"`

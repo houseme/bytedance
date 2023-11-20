@@ -26,6 +26,7 @@ import (
     "github.com/houseme/bytedance/config"
     "github.com/houseme/bytedance/minidrama"
     "github.com/houseme/bytedance/miniprogram"
+    "github.com/houseme/bytedance/pay"
     "github.com/houseme/bytedance/payment"
     "github.com/houseme/bytedance/utility/cache"
     "github.com/houseme/bytedance/utility/logger"
@@ -105,11 +106,16 @@ func (b *Bytedance) MiniProgram(ctx context.Context, cfg *config.Config) (*minip
 }
 
 // Pay create payment
-func (b *Bytedance) Pay(ctx context.Context, cfg *config.Config) (*payment.Pay, error) {
-    return payment.NewPay(ctx, b.initConfig(ctx, cfg))
+func (b *Bytedance) Pay(ctx context.Context, cfg *config.Config) (*pay.Pay, error) {
+    return pay.NewPay(ctx, b.initConfig(ctx, cfg))
 }
 
 // MiniDrama create drama
 func (b *Bytedance) MiniDrama(ctx context.Context, cfg *config.Config) (*minidrama.MiniDrama, error) {
     return minidrama.New(ctx, b.initConfig(ctx, cfg))
+}
+
+// Payment create payment
+func (b *Bytedance) Payment(ctx context.Context, cfg *config.Config) (*payment.Payment, error) {
+    return payment.NewPay(ctx, b.initConfig(ctx, cfg))
 }

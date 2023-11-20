@@ -48,6 +48,9 @@ type Config struct {
     scopes         string
     token          string
     salt           string // 支付密钥值
+    privateKey     string // 私钥
+    publicKey      string // 公钥
+    keyVersion     int    // 秘钥版本
     cache          cache.Cache
     request        request.Request
     logger         logger.ILogger
@@ -61,6 +64,9 @@ type options struct {
     Scopes         string
     Token          string
     Salt           string // 支付密钥值
+    PrivateKey     string // 私钥
+    PublicKey      string // 公钥
+    KeyVersion     int    // 秘钥版本
     Cache          cache.Cache
     Logger         logger.ILogger
     Request        request.Request
@@ -118,6 +124,27 @@ func WithSalt(salt string) Option {
     }
 }
 
+// WithPrivateKey set privateKey
+func WithPrivateKey(privateKey string) Option {
+    return func(o *options) {
+        o.PrivateKey = privateKey
+    }
+}
+
+// WithPublicKey set publicKey
+func WithPublicKey(publicKey string) Option {
+    return func(o *options) {
+        o.PublicKey = publicKey
+    }
+}
+
+// WithKeyVersion set keyVersion
+func WithKeyVersion(keyVersion int) Option {
+    return func(o *options) {
+        o.KeyVersion = keyVersion
+    }
+}
+
 // WithLogger set logger
 func WithLogger(logger logger.ILogger) Option {
     return func(o *options) {
@@ -159,6 +186,9 @@ func New(ctx context.Context, opts ...Option) *Config {
         scopes:         op.Scopes,
         salt:           op.Salt,
         token:          op.Token,
+        privateKey:     op.PrivateKey,
+        publicKey:      op.PublicKey,
+        keyVersion:     op.KeyVersion,
         request:        op.Request,
         logger:         op.Logger,
         cache:          op.Cache,
@@ -210,6 +240,24 @@ func (cfg *Config) SetSalt(salt string) *Config {
 // SetToken 设置 token
 func (cfg *Config) SetToken(token string) *Config {
     cfg.token = token
+    return cfg
+}
+
+// SetPrivateKey 设置 privateKey
+func (cfg *Config) SetPrivateKey(privateKey string) *Config {
+    cfg.privateKey = privateKey
+    return cfg
+}
+
+// SetPublicKey 设置 publicKey
+func (cfg *Config) SetPublicKey(publicKey string) *Config {
+    cfg.publicKey = publicKey
+    return cfg
+}
+
+// SetKeyVersion 设置 keyVersion
+func (cfg *Config) SetKeyVersion(keyVersion int) *Config {
+    cfg.keyVersion = keyVersion
     return cfg
 }
 
@@ -284,6 +332,21 @@ func (cfg *Config) Token() string {
 // Salt 获取 salt
 func (cfg *Config) Salt() string {
     return cfg.salt
+}
+
+// PrivateKey 获取 privateKey
+func (cfg *Config) PrivateKey() string {
+    return cfg.privateKey
+}
+
+// PublicKey 获取 publicKey
+func (cfg *Config) PublicKey() string {
+    return cfg.publicKey
+}
+
+// KeyVersion 获取 keyVersion
+func (cfg *Config) KeyVersion() int {
+    return cfg.keyVersion
 }
 
 // Cache 获取 cache

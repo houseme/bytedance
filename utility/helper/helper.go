@@ -39,7 +39,7 @@ import (
 
 // GenSign 生成签名
 func GenSign(method, url, timestamp, nonce, body string, privateKey *rsa.PrivateKey) (sign string, err error) {
-    // method 内容必须大写，如 GET、POST，uri 不包含域名，必须以'/'开头
+    // method 内容必须大写，如 GET、POST，URI 不包含域名，必须以'/'开头
     targetStr := method + "\n" + url + "\n" + timestamp + "\n" + nonce + "\n" + body + "\n"
     h := sha256.New()
     n, err := h.Write([]byte(targetStr))

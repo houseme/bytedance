@@ -17,7 +17,7 @@
  *
  */
 
-// Package domain domain
+// Package trade 交易
 package trade
 
 // AsyncResponse async response

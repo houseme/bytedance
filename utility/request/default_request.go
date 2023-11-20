@@ -37,6 +37,11 @@ import (
     "golang.org/x/crypto/pkcs12"
 )
 
+const (
+    headerAccessToken = "access-token"
+    headerContentType = "Content-Type"
+)
+
 // DefaultRequest 默认请求
 type DefaultRequest struct {
     AccessTokenKey string
@@ -56,7 +61,7 @@ func (srv *DefaultRequest) Get(ctx context.Context, url string) ([]byte, error) 
     
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     
     client := http.Client{}
@@ -82,7 +87,7 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
     
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     
     client := http.Client{}
@@ -113,11 +118,11 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
     if err != nil {
         return nil, err
     }
-    req.Header.Set("Content-Type", "application/json;charset=utf-8")
+    req.Header.Set(headerContentType, "application/json;charset=utf-8")
     
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     resp, err := http.DefaultClient.Do(req)
     if err != nil {
@@ -145,10 +150,10 @@ func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url 
     if err != nil {
         return nil, "", err
     }
-    req.Header.Set("Content-Type", "application/json;charset=utf-8")
+    req.Header.Set(headerContentType, "application/json;charset=utf-8")
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     resp, err := http.DefaultClient.Do(req)
     if err != nil {
@@ -161,7 +166,7 @@ func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url 
         return nil, "", fmt.Errorf("http post error : uri=%v , statusCode=%v", url, resp.StatusCode)
     }
     res, err := io.ReadAll(resp.Body)
-    contentType := resp.Header.Get("Content-Type")
+    contentType := resp.Header.Get(headerContentType)
     return res, contentType, err
 }
 
@@ -213,10 +218,10 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
     if err != nil {
         return nil, err
     }
-    req.Header.Set("Content-Type", contentType)
+    req.Header.Set(headerContentType, contentType)
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     response, err := http.DefaultClient.Do(req)
     if err != nil {
@@ -283,10 +288,10 @@ func (srv *DefaultRequest) PostXML(ctx context.Context, url string, data any) ([
     if err != nil {
         return nil, err
     }
-    req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+    req.Header.Set(headerContentType, "application/xml;charset=utf-8")
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     response, err := http.DefaultClient.Do(req)
     if err != nil {
@@ -319,10 +324,10 @@ func (srv *DefaultRequest) PostXMLWithTLS(ctx context.Context, url string, data 
     if err != nil {
         return nil, err
     }
-    req.Header.Set("Content-Type", "application/xml;charset=utf-8")
+    req.Header.Set(headerContentType, "application/xml;charset=utf-8")
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
-        req.Header.Set("access-token", accessToken)
+        req.Header.Set(headerAccessToken, accessToken)
     }
     response, err := client.Do(req)
     if err != nil {
