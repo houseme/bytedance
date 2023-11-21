@@ -90,28 +90,28 @@ type Extra struct {
 // MessageAbilityImpl 消息能力实现
 type MessageAbilityImpl struct {
     ProtocolType    int    `json:"protocol_type"`
-    TestUrl         string `json:"test_url"`
+    TestURL         string `json:"test_url"`
     AbilityIdentity string `json:"ability_identity"`
-    AppId           string `json:"app_id"`
+    AppID           string `json:"app_id"`
     IndustryCode    string `json:"industry_code"`
     Name            string `json:"name"`
-    ProdUrl         string `json:"prod_url"`
+    ProdURL         string `json:"prod_url"`
 }
 
 // ExtensionAbilityImpl 扩展能力实现
 type ExtensionAbilityImpl struct {
     AbilityIdentity string `json:"ability_identity"`
-    AppId           string `json:"app_id"`
+    AppID           string `json:"app_id"`
     IndustryCode    string `json:"industry_code"`
     Name            string `json:"name"`
-    ProdUrl         string `json:"prod_url"`
+    ProdURL         string `json:"prod_url"`
     ProtocolType    int    `json:"protocol_type"`
-    TestUrl         string `json:"test_url"`
+    TestURL         string `json:"test_url"`
 }
 
 // EffAbilityImpl 解决方案有效能力实现
 type EffAbilityImpl struct {
     ExtensionAbilityImplList []*ExtensionAbilityImpl `json:"extension_ability_impl_list"`
     MessageAbilityImplList   []*MessageAbilityImpl   `json:"message_ability_impl_list"`
-    SolutionId               string                  `json:"solution_id"`
+    SolutionID               string                  `json:"solution_id"`
 }

@@ -29,6 +29,7 @@ import (
     "github.com/houseme/bytedance/miniprogram/link"
     "github.com/houseme/bytedance/miniprogram/qrcode"
     "github.com/houseme/bytedance/miniprogram/schema"
+    "github.com/houseme/bytedance/miniprogram/solution"
     "github.com/houseme/bytedance/utility/base"
 )
 
@@ -96,4 +97,9 @@ func (ma *MicroApp) GetLink() *link.Link {
 // GetSchema 获取小程序 schema
 func (ma *MicroApp) GetSchema() *schema.Schema {
     return schema.New(ma.ctxCfg)
+}
+
+// GetSolution 获取小程序解决方案
+func (ma *MicroApp) GetSolution() *solution.Solution {
+    return solution.NewSolution(ma.ctxCfg)
 }

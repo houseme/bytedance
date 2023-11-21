@@ -21,33 +21,33 @@ package drama
 
 const (
     // resourceUpload 资源上传
-    resourceUpload = "https://open.douyin.com/api/playlet/v2/resource/upload?access_token="
+    resourceUpload = "https://open.douyin.com/api/playlet/v2/resource/upload/?access_token="
     // queryVideo 查询视频
-    queryVideo = "https://open.douyin.com/api/playlet/v2/video/query?access_token="
+    queryVideo = "https://open.douyin.com/api/playlet/v2/video/query/?access_token="
     
     // createVideo 创建视频
-    createVideo = "https://open.douyin.com/api/playlet/v2/video/create?access_token="
+    createVideo = "https://open.douyin.com/api/playlet/v2/video/create/?access_token="
     
     // editVideo 编辑视频
-    editVideo = "https://open.douyin.com/api/playlet/v2/video/edit?access_token="
+    editVideo = "https://open.douyin.com/api/playlet/v2/video/edit/?access_token="
     
     // queryVideoAlbum https://open.douyin.com/api/playlet/v2/album/fetch
-    queryVideoAlbum = "https://open.douyin.com/api/playlet/v2/album/fetch"
+    queryVideoAlbum = "https://open.douyin.com/api/playlet/v2/album/fetch/?access_token="
     
     // reviewVideo https://open.douyin.com/api/playlet/v2/video/review
-    reviewVideo = "https://open.douyin.com/api/playlet/v2/video/review?access_token="
+    reviewVideo = "https://open.douyin.com/api/playlet/v2/video/review/?access_token="
     
     // authorizeVideo https://open.douyin.com/api/playlet/v2/auth/authorize
-    authorizeVideo = "https://open.douyin.com/api/playlet/v2/auth/authorize?access_token="
+    authorizeVideo = "https://open.douyin.com/api/playlet/v2/auth/authorize/?access_token="
     
     // onlineAlbum https://open.douyin.com/api/playlet/v2/album/online/
-    onlineAlbum = "https://open.douyin.com/api/playlet/v2/album/online?access_token="
+    onlineAlbum = "https://open.douyin.com/api/playlet/v2/album/online/?access_token="
     
     // bindAlbum https://open.douyin.com/api/playlet/v2/album/bind
-    bindAlbum = "https://open.douyin.com/api/playlet/v2/album/bind?access_token="
+    bindAlbum = "https://open.douyin.com/api/playlet/v2/album/bind/?access_token="
     
     // playInfo https://open.douyin.com/api/playlet/v2/video/play_info
-    playInfo = "https://open.douyin.com/api/playlet/v2/video/play_info?access_token="
+    playInfo = "https://open.douyin.com/api/playlet/v2/video/play_info/?access_token="
 )
 
 const (
