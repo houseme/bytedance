@@ -50,8 +50,6 @@ const (
     queryOrder = "https://open.douyin.com/api/trade_basic/v1/developer/order_query"
 )
 
-
-
 const (
     // 支付超时时间，单位秒 默认值 300
     defaultPayExpireSeconds = 300

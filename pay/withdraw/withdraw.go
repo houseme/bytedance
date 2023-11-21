@@ -20,7 +20,13 @@
 package withdraw
 
 import (
+    "context"
+    "encoding/json"
+    "strings"
+    
+    "github.com/houseme/bytedance/config"
     "github.com/houseme/bytedance/credential"
+    "github.com/houseme/bytedance/utility/base"
 )
 
 // Withdraw merchant accounts withdraw
@@ -31,4 +37,98 @@ type Withdraw struct {
 // NewWithdraw init
 func NewWithdraw(cfg *credential.ContextConfig) *Withdraw {
     return &Withdraw{ctxCfg: cfg}
+}
+
+// getAccessToken 获取 access_token
+func (t *Withdraw) getAccessToken(ctx context.Context) (accessToken string, err error) {
+    var clientToken *credential.ClientToken
+    if clientToken, err = t.ctxCfg.GetClientToken(ctx); err != nil {
+        return "", err
+    }
+    if clientToken == nil {
+        return "", base.ErrClientTokenIsEmpty
+    }
+    
+    if strings.TrimSpace(clientToken.AccessToken) == "" {
+        return "", base.ErrClientAccessTokenIsEmpty
+    }
+    
+    return clientToken.AccessToken, nil
+}
+
+// setContext 设置上下文
+func (t *Withdraw) setContext(ctx context.Context) (context.Context, error) {
+    accessToken, err := t.getAccessToken(ctx)
+    if err != nil {
+        return nil, err
+    }
+    ctx = context.WithValue(
+        ctx,
+        config.AccessTokenKey,
+        accessToken,
+    )
+    return ctx, nil
+}
+
+// QueryBalance query balance
+func (t *Withdraw) QueryBalance(ctx context.Context, req *QueryBalanceRequest) (resp *QueryBalanceResponse, err error) {
+    if req == nil {
+        return nil, base.ErrRequestIsEmpty
+    }
+    
+    if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
+        req.AppID = t.ctxCfg.Config.ClientKey()
+    }
+    if ctx, err = t.setContext(ctx); err != nil {
+        return nil, err
+    }
+    var response []byte
+    if response, err = t.ctxCfg.Request().PostJSON(ctx, queryMerchantBalance, *req); err != nil {
+        return nil, err
+    }
+    resp = &QueryBalanceResponse{}
+    err = json.Unmarshal(response, resp)
+    return
+}
+
+// Apply to apply withdrawal
+func (t *Withdraw) Apply(ctx context.Context, req *MerchantWithdrawRequest) (resp *MerchantWithdrawResponse, err error) {
+    if req == nil {
+        return nil, base.ErrRequestIsEmpty
+    }
+    
+    if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
+        req.AppID = t.ctxCfg.Config.ClientKey()
+    }
+    if ctx, err = t.setContext(ctx); err != nil {
+        return nil, err
+    }
+    var response []byte
+    if response, err = t.ctxCfg.Request().PostJSON(ctx, applyMerchantWithdraw, *req); err != nil {
+        return nil, err
+    }
+    resp = &MerchantWithdrawResponse{}
+    err = json.Unmarshal(response, resp)
+    return
+}
+
+// QueryWithdraw query withdraws
+func (t *Withdraw) QueryWithdraw(ctx context.Context, req *QueryMerchantWithdrawRequest) (resp *QueryMerchantWithdrawResponse, err error) {
+    if req == nil {
+        return nil, base.ErrRequestIsEmpty
+    }
+    
+    if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
+        req.AppID = t.ctxCfg.Config.ClientKey()
+    }
+    if ctx, err = t.setContext(ctx); err != nil {
+        return nil, err
+    }
+    var response []byte
+    if response, err = t.ctxCfg.Request().PostJSON(ctx, queryWithdrawOrder, *req); err != nil {
+        return nil, err
+    }
+    resp = &QueryMerchantWithdrawResponse{}
+    err = json.Unmarshal(response, resp)
+    return
 }

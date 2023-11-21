@@ -24,7 +24,6 @@ import (
     
     "github.com/houseme/bytedance/config"
     "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/pay/account"
     "github.com/houseme/bytedance/pay/asyncnotify"
     "github.com/houseme/bytedance/pay/refund"
     "github.com/houseme/bytedance/pay/settle"
@@ -97,11 +96,6 @@ func (p *Pay) Settle() *settle.Settle {
 // Refund order cash
 func (p *Pay) Refund() *refund.Refund {
     return refund.NewRefund(p.ContextConfig())
-}
-
-// Account merchant accounts
-func (p *Pay) Account() *account.Account {
-    return account.NewAccount(p.ContextConfig())
 }
 
 // AsyncNotify async

@@ -32,4 +32,3 @@ type Withdraw struct {
 func NewWithdraw(cfg *credential.ContextConfig) *Withdraw {
     return &Withdraw{ctxCfg: cfg}
 }
-

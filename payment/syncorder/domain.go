@@ -44,11 +44,11 @@ type OrderDetailGroup struct {
 
 // OrderDetailGeneral order detail
 type OrderDetailGeneral struct {
-    OrderID    string                    `json:"order_id" description:"开发者侧业务单号。用作幂等控制。该订单号是和担保支付的支付单号绑定的，也就是预下单时传入的 out_order_no 字段，长度 <= 64byte"`
-    CreateTime int64                     `json:"create_time" description:"订单创建时间，时间戳，13 位毫秒时间戳"`
-    Status     string                    `json:"status" description:"订单状态，订单状态，建议采用以下枚举值：待待支付，已支付，已取消，已超时，已核销，退款中。已退款，退款失败"`
-    Amount     int64                     `json:"amount" description:"订单商品总数"`
-    TotalPrice int64                     `json:"total_price" description:"订单总价，单位为分"`
+    OrderID    string                   `json:"order_id" description:"开发者侧业务单号。用作幂等控制。该订单号是和担保支付的支付单号绑定的，也就是预下单时传入的 out_order_no 字段，长度 <= 64byte"`
+    CreateTime int64                    `json:"create_time" description:"订单创建时间，时间戳，13 位毫秒时间戳"`
+    Status     string                   `json:"status" description:"订单状态，订单状态，建议采用以下枚举值：待待支付，已支付，已取消，已超时，已核销，退款中。已退款，退款失败"`
+    Amount     int64                    `json:"amount" description:"订单商品总数"`
+    TotalPrice int64                    `json:"total_price" description:"订单总价，单位为分"`
     DetailURL  string                   `json:"detail_url" description:"小程序订单详情页 path，长度<=1024 byte (备注：该路径需要保证在小程序内配置过，相对路径即可）"`
     ItemList   []OrderDetailGeneralItem `json:"item_list" description:"订单商品列表"`
 }

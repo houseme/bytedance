@@ -63,7 +63,6 @@ const (
     ErrTipsSuccess = "success"
 )
 
-
 var (
     // VideoTagList 视频标签
     VideoTagList = []Tag{
