@@ -20,8 +20,8 @@
 package settle
 
 const (
-    applySettle = "https://open.douyin.com/api/trade_basic/v1/developer/settle_create"
-    querySettle = "https://open.douyin.com/api/trade_basic/v1/developer/settle_query"
+    applySettle = "https://open.douyin.com/api/trade_basic/v1/developer/settle_create/"
+    querySettle = "https://open.douyin.com/api/trade_basic/v1/developer/settle_query/"
 )
 
 const (

@@ -20,9 +20,9 @@
 package withdraw
 
 const (
-    queryMerchantBalance  = "https://open.douyin.com/api/apps/ecpay/saas/query_merchant_balance"
-    applyMerchantWithdraw = "https://open.douyin.com/api/apps/ecpay/saas/merchant_withdraw"
-    queryWithdrawOrder    = "https://open.douyin.com/api/apps/ecpay/saas/query_withdraw_order"
+    queryMerchantBalance  = "https://open.douyin.com/api/apps/ecpay/saas/query_merchant_balance/"
+    applyMerchantWithdraw = "https://open.douyin.com/api/apps/ecpay/saas/merchant_withdraw/"
+    queryWithdrawOrder    = "https://open.douyin.com/api/apps/ecpay/saas/query_withdraw_order/"
 )
 
 const (

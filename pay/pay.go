@@ -17,6 +17,7 @@
  *
  */
 
+// Package pay 支付
 package pay
 
 import (

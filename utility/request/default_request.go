@@ -38,8 +38,11 @@ import (
 )
 
 const (
-    headerAccessToken = "access-token"
-    headerContentType = "Content-Type"
+    headerAccessToken      = "access-token"
+    headerContentType      = "Content-Type"
+    headerContentTypeValue = "application/json;charset=utf-8"
+    headerUserAgent        = "User-Agent"
+    headerUserAgentValue   = `Mozilla/5.0 (Bytedance-Go-SDK; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36`
 )
 
 // DefaultRequest 默认请求
@@ -63,6 +66,7 @@ func (srv *DefaultRequest) Get(ctx context.Context, url string) ([]byte, error) 
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
     }
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
     
     client := http.Client{}
     resp, err := client.Do(req)
@@ -89,6 +93,7 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
     }
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
     
     client := http.Client{}
     resp, err := client.Do(req)
@@ -106,11 +111,12 @@ func (srv *DefaultRequest) Post(ctx context.Context, url string, data []byte) ([
 
 // PostJSON HTTP post JSON request
 func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) ([]byte, error) {
-    jsonBuf := new(bytes.Buffer)
-    enc := json.NewEncoder(jsonBuf)
+    var (
+        jsonBuf = new(bytes.Buffer)
+        enc     = json.NewEncoder(jsonBuf)
+    )
     enc.SetEscapeHTML(false)
-    err := enc.Encode(data)
-    if err != nil {
+    if err := enc.Encode(data); err != nil {
         return nil, err
     }
     
@@ -118,8 +124,8 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
     if err != nil {
         return nil, err
     }
-    req.Header.Set(headerContentType, "application/json;charset=utf-8")
-    
+    req.Header.Set(headerContentType, headerContentTypeValue)
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
@@ -139,18 +145,20 @@ func (srv *DefaultRequest) PostJSON(ctx context.Context, url string, data any) (
 
 // PostJSONWithRespContentType HTTP post JSON request with the response content type
 func (srv *DefaultRequest) PostJSONWithRespContentType(ctx context.Context, url string, data any) ([]byte, string, error) {
-    jsonBuf := new(bytes.Buffer)
-    enc := json.NewEncoder(jsonBuf)
+    var (
+        jsonBuf = new(bytes.Buffer)
+        enc     = json.NewEncoder(jsonBuf)
+    )
     enc.SetEscapeHTML(false)
-    err := enc.Encode(data)
-    if err != nil {
+    if err := enc.Encode(data); err != nil {
         return nil, "", err
     }
     req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, jsonBuf)
     if err != nil {
         return nil, "", err
     }
-    req.Header.Set(headerContentType, "application/json;charset=utf-8")
+    req.Header.Set(headerContentType, headerContentTypeValue)
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
@@ -177,8 +185,10 @@ func (srv *DefaultRequest) PostFile(ctx context.Context, url string, files []Mul
 
 // PostMultipartForm HTTP post multipart form request
 func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, files []MultipartFormField) (resp []byte, err error) {
-    bodyBuf := &bytes.Buffer{}
-    bodyWriter := multipart.NewWriter(bodyBuf)
+    var (
+        bodyBuf    = &bytes.Buffer{}
+        bodyWriter = multipart.NewWriter(bodyBuf)
+    )
     for _, field := range files {
         if field.IsFile {
             fileWriter, e := bodyWriter.CreateFormFile(field.FieldName, field.FileName)
@@ -219,6 +229,7 @@ func (srv *DefaultRequest) PostMultipartForm(ctx context.Context, url string, fi
         return nil, err
     }
     req.Header.Set(headerContentType, contentType)
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
     accessToken := ctxValueToString(ctx, srv.AccessTokenKey)
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
@@ -293,6 +304,8 @@ func (srv *DefaultRequest) PostXML(ctx context.Context, url string, data any) ([
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
     }
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
+    
     response, err := http.DefaultClient.Do(req)
     if err != nil {
         return nil, err
@@ -329,6 +342,7 @@ func (srv *DefaultRequest) PostXMLWithTLS(ctx context.Context, url string, data 
     if strings.TrimSpace(accessToken) != "" {
         req.Header.Set(headerAccessToken, accessToken)
     }
+    req.Header.Set(headerUserAgent, headerUserAgentValue)
     response, err := client.Do(req)
     if err != nil {
         return nil, err

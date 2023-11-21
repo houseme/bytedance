@@ -82,10 +82,12 @@ func (t *Withdraw) QueryBalance(ctx context.Context, req *QueryBalanceRequest) (
     if ctx, err = t.setContext(ctx); err != nil {
         return nil, err
     }
+    t.ctxCfg.Logger().Debug(ctx, "request content:", req," request url:",queryMerchantBalance)
     var response []byte
     if response, err = t.ctxCfg.Request().PostJSON(ctx, queryMerchantBalance, *req); err != nil {
         return nil, err
     }
+    t.ctxCfg.Logger().Debug(ctx, "response content:", string(response))
     resp = &QueryBalanceResponse{}
     err = json.Unmarshal(response, resp)
     return

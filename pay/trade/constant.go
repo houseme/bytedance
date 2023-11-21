@@ -41,13 +41,13 @@ const (
 )
 
 const (
-    // QueryTag query tag https://open.douyin.com/api/trade_basic/v1/developer/tag_query/
+    // queryTag query tag https://open.douyin.com/api/trade_basic/v1/developer/tag_query/
     // see: https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/tag/tag_group_query
-    QueryTag = "https://open.douyin.com/api/trade_basic/v1/developer/tag_query"
+    queryTag = "https://open.douyin.com/api/trade_basic/v1/developer/tag_query/"
     
     // queryOrder query order https://open.douyin.com/api/trade_basic/v1/developer/order_query/
     // see: https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/server/trade-system/general/order/query_order
-    queryOrder = "https://open.douyin.com/api/trade_basic/v1/developer/order_query"
+    queryOrder = "https://open.douyin.com/api/trade_basic/v1/developer/order_query/"
 )
 
 const (
