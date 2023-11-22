@@ -36,6 +36,13 @@ const (
     ErrTipsSuccess = "success"
     // ErrTipsSystemError system error 提示
     ErrTipsSystemError = "system error"
+    
+    // StateSuccess 结果状态，目前有两种状态"SUCCESS" （支付成功），"CANCEL"（支付取消））
+    // indicates that the payment was successful
+    StateSuccess = "SUCCESS"
+    
+    // StateCancel indicates that the payment was cancelled
+    StateCancel = "CANCEL"
 )
 
 const (
