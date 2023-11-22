@@ -22,9 +22,11 @@ package trade
 
 import (
     "context"
+    "crypto/rsa"
     "crypto/x509"
     "encoding/base64"
     "encoding/json"
+    "errors"
     "fmt"
     "strconv"
     "strings"
@@ -136,9 +138,14 @@ func (t *Trade) getByteAuthorization(privateKeyStr, data, appId, nonceStr, times
     if err != nil {
         return "", err
     }
-    privateKey, err := x509.ParsePKCS1PrivateKey(key)
+    priv, err := x509.ParsePKCS8PrivateKey(key)
     if err != nil {
         return "", err
+    }
+    // Convert to *rsa.PrivateKey
+    privateKey, ok := priv.(*rsa.PrivateKey)
+    if !ok {
+        return "", errors.New("not an RSA Private Key")
     }
     // 生成签名
     signature, err := helper.GenSign("POST", "/requestOrder", timestamp, nonceStr, data, privateKey)
