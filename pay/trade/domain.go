@@ -65,7 +65,7 @@ type CreateOrderRequest struct {
     PayExpireSeconds int        `json:"payExpireSeconds,omitempty" description:"支付超时时间，单位秒，例如 300 表示 300 秒后过期；不传或传 0 会使用默认值 300，不能超过 48 小时。"`
     PayNotifyURL     string     `json:"payNotifyUrl,omitempty" description:"支付结果通知地址，长度 <= 512byte"`
     MerchantUID      string     `json:"merchantUid,omitempty" description:"该笔交易卖家商户号，开发者自定义收款商户号"`
-    OrderEntrySchema []*Schema  `json:"orderEntrySchema" description:"订单详情页 schema，用于描述订单详情页的跳转协议"`
+    OrderEntrySchema *Schema    `json:"orderEntrySchema" description:"订单详情页 schema，用于描述订单详情页的跳转协议"`
     LimitPayWayList  []int      `json:"limitPayWayList,omitempty" description:"限制支付渠道，不传或传空数组表示不限制，目前支持的支付渠道有：1：微信，2：支付宝 10：抖音支付"`
 }
 
