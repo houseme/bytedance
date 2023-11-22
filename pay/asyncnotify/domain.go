@@ -21,6 +21,7 @@ package asyncnotify
 
 // AsyncRequest 异步通知
 type AsyncRequest struct {
+    Content          string `json:"content" description:"回调内容，应答中的报文主体（response body）"`
     Version          string `json:"version" description:"固定值：3.0。回调版本，用于开发者识别回调参数的变更"`
     Msg              string `json:"msg" description:"订单相关信息的 JSON 字符串"`
     Type             string `json:"type" description:"回调类型（支付结果回调为 payment）：payment（支付成功/支付取消）"`

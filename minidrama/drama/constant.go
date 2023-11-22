@@ -58,9 +58,35 @@ const (
     
     // ErrNoSuccess = 0
     ErrNoSuccess = 0
+    // ErrNoVersion = 1
+    ErrNoVersion = 1
+    // ErrNoFailedToCheckTheSignature 验签失败
+    ErrNoFailedToCheckTheSignature = 400
+    // ErrNoSystemError system error 错误码
+    ErrNoSystemError = 10000
+    
     
     // ErrTipsSuccess = "success"
     ErrTipsSuccess = "success"
+    // ErrTipsVersion = "version error"
+    ErrTipsVersion = "version error"
+    // ErrTipsSystemError system error 提示
+    ErrTipsSystemError = "system error"
+    // ErrTipsFailedToCheckTheSignature 验签失败
+    ErrTipsFailedToCheckTheSignature = "failed to check the signature"
+    
+    // DefaultAsyncVersion 异步版本号
+    DefaultAsyncVersion = "2.0"
+)
+
+const (
+    // AlbumAudit 消息通知类型 "album_audit","episode_audit","upload_video"
+    // 专辑审核
+    AlbumAudit = "album_audit"
+    // EpisodeAudit 剧集审核
+    EpisodeAudit = "episode_audit"
+    // UploadVideo 上传视频
+    UploadVideo = "upload_video"
 )
 
 var (

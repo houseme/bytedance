@@ -395,9 +395,13 @@ type PlayInfoData struct {
 
 // AsyncRequest 异步请求
 type AsyncRequest struct {
-    Msg     string `json:"msg"`
-    Type    string `json:"type" description:"消息类型 album_audit,episode_audit,upload_video"`
-    Version string `json:"version" description:"版本号，默认为 2.0"`
+    Content       string `json:"content" description:"消息内容"`
+    Msg           string `json:"msg"`
+    Type          string `json:"type" description:"消息类型 album_audit,episode_audit,upload_video"`
+    Version       string `json:"version" description:"版本号，默认为 2.0"`
+    ByteTimestamp string `json:"byte_timestamp" description:"消息发送时间戳，单位为秒"`
+    ByteNonceStr  string `json:"byte_nonce_str" description:"消息随机字符串"`
+    ByteSignature string `json:"byte_signature" description:"消息签名"`
 }
 
 // AsyncAlbumAudit 异步专辑审核
@@ -421,13 +425,19 @@ type AsyncEpisodeAudit struct {
 
 // AsyncUploadVideo 上传视频
 type AsyncUploadVideo struct {
-    MaAppID     string `json:"ma_app_id"`
-    OpenVideoID string `json:"open_video_id"`
-    Success     bool   `json:"success"`
+    MaAppID          string `json:"ma_app_id"`
+    OpenVideoID      string `json:"open_video_id"`
+    Success          bool   `json:"success"`
+    SuccessToDyCloud bool   `json:"success_to_dy_cloud"`
+    DyCloudID        string `json:"dy_cloud_id"`
 }
 
 // AsyncResponse 异步响应
 type AsyncResponse struct {
-    ErrNo   int    `json:"err_no"`
-    ErrTips string `json:"err_tips"`
+    ErrNo        int                `json:"err_no"`
+    ErrTips      string             `json:"err_tips"`
+    Type         string             `json:"type" description:"消息类型 album_audit,episode_audit,upload_video"`
+    AlbumAudit   *AsyncAlbumAudit   `json:"album_audit"`
+    EpisodeAudit *AsyncEpisodeAudit `json:"episode_audit"`
+    UploadVideo  *AsyncUploadVideo  `json:"upload_video"`
 }

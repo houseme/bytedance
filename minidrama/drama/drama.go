@@ -28,6 +28,7 @@ import (
     "github.com/houseme/bytedance/config"
     "github.com/houseme/bytedance/credential"
     "github.com/houseme/bytedance/utility/base"
+    "github.com/houseme/bytedance/utility/helper"
 )
 
 // Drama mini drama
@@ -301,6 +302,64 @@ func (d *Drama) PlayInfo(ctx context.Context, req *PlayInfoRequest) (resp *PlayI
     
     resp = &PlayInfoResponse{}
     err = json.Unmarshal(response, &resp)
+    
+    return
+}
+
+// AsyncNotify 异步通知
+func (d *Drama) AsyncNotify(ctx context.Context, req *AsyncRequest) (resp *AsyncResponse, err error) {
+    if req == nil {
+        return nil, base.ErrRequestIsEmpty
+    }
+    resp = &AsyncResponse{
+        ErrNo:   ErrNoSuccess,
+        ErrTips: ErrTipsSuccess,
+    }
+    if req.Version != DefaultAsyncVersion {
+        resp.ErrNo = ErrNoVersion
+        resp.ErrTips = ErrTipsVersion
+        return
+    }
+    
+    var checkResult bool
+    if checkResult, err = helper.CheckSign(req.ByteTimestamp, req.ByteNonceStr, req.Content, req.ByteSignature, d.ctxCfg.Config.PublicKey()); err != nil {
+        return
+    }
+    if !checkResult {
+        resp.ErrNo = ErrNoFailedToCheckTheSignature
+        resp.ErrTips = ErrTipsFailedToCheckTheSignature
+        return
+    }
+    
+    if req.Type == AlbumAudit {
+        var data = new(AsyncAlbumAudit)
+        if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
+            resp.ErrNo = ErrNoSystemError
+            resp.ErrTips = ErrTipsSystemError + err.Error()
+            return
+        }
+        resp.AlbumAudit = data
+    }
+    
+    if req.Type == EpisodeAudit {
+        var data = new(AsyncEpisodeAudit)
+        if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
+            resp.ErrNo = ErrNoSystemError
+            resp.ErrTips = ErrTipsSystemError + err.Error()
+            return
+        }
+        resp.EpisodeAudit = data
+    }
+    
+    if req.Type == UploadVideo {
+        var data = new(AsyncUploadVideo)
+        if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
+            resp.ErrNo = ErrNoSystemError
+            resp.ErrTips = ErrTipsSystemError + err.Error()
+            return
+        }
+        resp.UploadVideo = data
+    }
     
     return
 }

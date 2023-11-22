@@ -53,7 +53,7 @@ func (a *AsyncNotify) AsyncNotify(ctx context.Context, req *AsyncRequest) (resp 
     }
     
     var checkSignResult bool
-    if checkSignResult, err = helper.CheckSign(req.ByteTimestamp, req.ByteNonceStr, req.Msg, req.ByteSignature, a.ctxCfg.Config.PrivateKey()); err != nil {
+    if checkSignResult, err = helper.CheckSign(req.ByteTimestamp, req.ByteNonceStr, req.Msg, req.ByteSignature, a.ctxCfg.Config.PublicKey()); err != nil {
         resp.ErrNo = ErrNoSystemError
         resp.ErrTips = ErrTipsSystemError
         return
