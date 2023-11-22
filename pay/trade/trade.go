@@ -141,6 +141,6 @@ func (t *Trade) getByteAuthorization(privateKeyStr, data, appId, nonceStr, times
         return "", err
     }
     // 构造 byteAuthorization
-    byteAuthorization := fmt.Sprintf("RSA2048 appid=%s,nonce_str=%s,timestamp=%s,key_version=%s,signature=%s", appId, nonceStr, timestamp, keyVersion, signature)
+    byteAuthorization := fmt.Sprintf("SHA256-RSA2048 appid=%s,nonce_str=%s,timestamp=%s,key_version=%s,signature=%s", appId, nonceStr, timestamp, keyVersion, signature)
     return byteAuthorization, nil
 }
