@@ -60,7 +60,7 @@ type QueryOrderData struct {
 // CreateOrderRequest 创建订单
 type CreateOrderRequest struct {
     SkuList          []*SkuItem `json:"skuList" description:"下单商品信息，注意：目前只支持传入一项"`
-    OutTradeNo       string     `json:"outTradeNo" description:"开发者系统生成的订单号，与抖音开平交易单号 order_id 唯一关联，长度 <= 64byte"`
+    OutOrderNo       string     `json:"outOrderNo" description:"开发者系统生成的订单号，与抖音开平交易单号 order_id 唯一关联，长度 <= 64byte"`
     TotalAmount      int        `json:"totalAmount" description:"订单总金额，单位分，支付金额为 = total_amount - discount_amount"`
     PayExpireSeconds int        `json:"payExpireSeconds,omitempty" description:"支付超时时间，单位秒，例如 300 表示 300 秒后过期；不传或传 0 会使用默认值 300，不能超过 48 小时。"`
     PayNotifyURL     string     `json:"payNotifyUrl,omitempty" description:"支付结果通知地址，长度 <= 512byte"`

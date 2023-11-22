@@ -22,11 +22,8 @@ package trade
 
 import (
     "context"
-    "crypto/rsa"
-    "crypto/x509"
     "encoding/base64"
     "encoding/json"
-    "errors"
     "fmt"
     "strconv"
     "strings"
@@ -98,8 +95,8 @@ func (t *Trade) QueryTrade(ctx context.Context, req *QueryOrderRequest) (resp *Q
 // CreateTrade create trade relation
 func (t *Trade) CreateTrade(ctx context.Context, req *CreateOrderRequest) (resp *CreateOrderResponse, err error) {
     t.ctxCfg.Logger().Debug(ctx, "CreatePay req:", req)
-    if req.OutTradeNo == "" {
-        return nil, base.ErrParamKeyValueEmpty("OutTradeNo")
+    if req.OutOrderNo == "" {
+        return nil, base.ErrParamKeyValueEmpty("OutOrderNo")
     }
     
     if req.TotalAmount < 1 {
@@ -132,27 +129,18 @@ func (t *Trade) CreateTrade(ctx context.Context, req *CreateOrderRequest) (resp 
 }
 
 func (t *Trade) getByteAuthorization(privateKeyStr, data, appId, nonceStr, timestamp, keyVersion string) (string, error) {
-    var byteAuthorization string
     // 读取私钥
     key, err := base64.StdEncoding.DecodeString(strings.ReplaceAll(privateKeyStr, "\n", ""))
     if err != nil {
         return "", err
     }
-    priv, err := x509.ParsePKCS8PrivateKey(key)
-    if err != nil {
-        return "", err
-    }
-    // Convert to *rsa.PrivateKey
-    privateKey, ok := priv.(*rsa.PrivateKey)
-    if !ok {
-        return "", errors.New("not an RSA Private Key")
-    }
+    
     // 生成签名
-    signature, err := helper.GenSign("POST", "/requestOrder", timestamp, nonceStr, data, privateKey)
+    signature, err := helper.GenSign("POST", "/requestOrder", timestamp, nonceStr, data, key, t.ctxCfg.KeyType())
     if err != nil {
         return "", err
     }
     // 构造 byteAuthorization
-    byteAuthorization = fmt.Sprintf("RSA2048 appid=%s,nonce_str=%s,timestamp=%s,key_version=%s,signature=%s", appId, nonceStr, timestamp, keyVersion, signature)
+    byteAuthorization := fmt.Sprintf("RSA2048 appid=%s,nonce_str=%s,timestamp=%s,key_version=%s,signature=%s", appId, nonceStr, timestamp, keyVersion, signature)
     return byteAuthorization, nil
 }

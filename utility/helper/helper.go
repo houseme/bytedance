@@ -35,10 +35,32 @@ import (
     "strings"
     "time"
     "unicode"
+    
+    "github.com/houseme/bytedance/config"
 )
 
+// ParsePrivateKey parses private key bytes to rsa privateKey
+func ParsePrivateKey(privateKeyDecoded []byte, keyType config.Secret) (*rsa.PrivateKey, error) {
+    switch keyType {
+    case config.PKCS1:
+        return x509.ParsePKCS1PrivateKey(privateKeyDecoded)
+    case config.PKCS8:
+        if keyParsed, err := x509.ParsePKCS8PrivateKey(privateKeyDecoded); err != nil {
+            return nil, err
+        } else {
+            return keyParsed.(*rsa.PrivateKey), nil
+        }
+    default:
+        return &rsa.PrivateKey{}, errors.New("secretInfo PrivateKeyDataType unsupported")
+    }
+}
+
 // GenSign 生成签名
-func GenSign(method, url, timestamp, nonce, body string, privateKey *rsa.PrivateKey) (sign string, err error) {
+func GenSign(method, url, timestamp, nonce, body string, key []byte, keyType config.Secret) (sign string, err error) {
+    var privateKey *rsa.PrivateKey
+    if privateKey, err = ParsePrivateKey(key, keyType); err != nil {
+        return "", err
+    }
     // method 内容必须大写，如 GET、POST，URI 不包含域名，必须以'/'开头
     targetStr := method + "\n" + url + "\n" + timestamp + "\n" + nonce + "\n" + body + "\n"
     h := sha256.New()

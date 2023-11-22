@@ -38,6 +38,14 @@ const (
     AccessTokenKey = "accessTokenKey"
 )
 
+// Secret defines the private key type
+type Secret uint
+
+const (
+    PKCS1 Secret = iota
+    PKCS8
+)
+
 // Config 抖音开放平台的配置信息
 type Config struct {
     version        string
@@ -51,6 +59,7 @@ type Config struct {
     privateKey     string // 私钥
     publicKey      string // 公钥
     keyVersion     int    // 秘钥版本
+    keyType        Secret
     cache          cache.Cache
     request        request.Request
     logger         logger.ILogger
@@ -67,6 +76,7 @@ type options struct {
     PrivateKey     string // 私钥
     PublicKey      string // 公钥
     KeyVersion     int    // 秘钥版本
+    KeyType        Secret
     Cache          cache.Cache
     Logger         logger.ILogger
     Request        request.Request
@@ -145,6 +155,13 @@ func WithKeyVersion(keyVersion int) Option {
     }
 }
 
+// WithKeyType set keyType
+func WithKeyType(keyType Secret) Option {
+    return func(o *options) {
+        o.KeyType = keyType
+    }
+}
+
 // WithLogger set logger
 func WithLogger(logger logger.ILogger) Option {
     return func(o *options) {
@@ -189,6 +206,7 @@ func New(ctx context.Context, opts ...Option) *Config {
         privateKey:     op.PrivateKey,
         publicKey:      op.PublicKey,
         keyVersion:     op.KeyVersion,
+        keyType:        op.KeyType,
         request:        op.Request,
         logger:         op.Logger,
         cache:          op.Cache,
@@ -258,6 +276,12 @@ func (cfg *Config) SetPublicKey(publicKey string) *Config {
 // SetKeyVersion 设置 keyVersion
 func (cfg *Config) SetKeyVersion(keyVersion int) *Config {
     cfg.keyVersion = keyVersion
+    return cfg
+}
+
+// SetKeyType 设置 keyType
+func (cfg *Config) SetKeyType(keyType Secret) *Config {
+    cfg.keyType = keyType
     return cfg
 }
 
@@ -347,6 +371,11 @@ func (cfg *Config) PublicKey() string {
 // KeyVersion 获取 keyVersion
 func (cfg *Config) KeyVersion() int {
     return cfg.keyVersion
+}
+
+// KeyType 获取 keyType
+func (cfg *Config) KeyType() Secret {
+    return cfg.keyType
 }
 
 // Cache 获取 cache
