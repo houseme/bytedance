@@ -77,8 +77,8 @@ type CreateOrderResponse struct {
 
 // Schema Schema
 type Schema struct {
-    Path   string         `json:"path"`
-    Params map[string]any `json:"params"`
+    Path   string `json:"path"`
+    Params string `json:"params"`
 }
 
 // SkuItem sku item info
