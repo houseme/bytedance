@@ -78,7 +78,9 @@ func (d *Drama) UploadImage(ctx context.Context, req *UploadImageRequest) (resp 
         return nil, base.ErrRequestIsEmpty
     }
     req.ResourceType = ResourceTypeImage
-    
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
+    }
     var accessToken string
     if ctx, accessToken, err = d.setContext(ctx); err != nil {
         return nil, err
@@ -101,7 +103,9 @@ func (d *Drama) UploadVideo(ctx context.Context, req *UploadVideoRequest) (resp 
         return nil, base.ErrRequestIsEmpty
     }
     req.ResourceType = ResourceTypeVideo
-    
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
+    }
     var accessToken string
     if ctx, accessToken, err = d.setContext(ctx); err != nil {
         return nil, err
@@ -122,6 +126,9 @@ func (d *Drama) UploadVideo(ctx context.Context, req *UploadVideoRequest) (resp 
 func (d *Drama) QueryVideo(ctx context.Context, req *QueryVideoRequest) (resp *QueryVideoResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty
+    }
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
     }
     
     var accessToken string
@@ -145,6 +152,10 @@ func (d *Drama) CreateVideo(ctx context.Context, req *CreateVideoRequest) (resp 
         return nil, base.ErrRequestIsEmpty
     }
     
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
+    }
+    
     var accessToken string
     if ctx, accessToken, err = d.setContext(ctx); err != nil {
         return nil, err
@@ -164,6 +175,10 @@ func (d *Drama) CreateVideo(ctx context.Context, req *CreateVideoRequest) (resp 
 func (d *Drama) EditVideo(ctx context.Context, req *EditVideoRequest) (resp *EditVideoResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty
+    }
+    
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
     }
     
     var accessToken string
@@ -187,6 +202,10 @@ func (d *Drama) QueryVideoAlbum(ctx context.Context, req *QueryVideoAlbumRequest
         return nil, base.ErrRequestIsEmpty
     }
     
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
+    }
+    
     var accessToken string
     if ctx, accessToken, err = d.setContext(ctx); err != nil {
         return nil, err
@@ -208,6 +227,10 @@ func (d *Drama) ReviewVideo(ctx context.Context, req *ReviewVideoRequest) (resp 
         return nil, base.ErrRequestIsEmpty
     }
     
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
+    }
+    
     var accessToken string
     if ctx, accessToken, err = d.setContext(ctx); err != nil {
         return nil, err
@@ -227,6 +250,10 @@ func (d *Drama) ReviewVideo(ctx context.Context, req *ReviewVideoRequest) (resp 
 func (d *Drama) AuthorizeVideo(ctx context.Context, req *AuthorizeVideoRequest) (resp *AuthorizeVideoResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty
+    }
+    
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
     }
     
     var accessToken string
@@ -291,6 +318,11 @@ func (d *Drama) PlayInfo(ctx context.Context, req *PlayInfoRequest) (resp *PlayI
     if req == nil {
         return nil, base.ErrRequestIsEmpty
     }
+    
+    if req.MaAppID == "" {
+        req.MaAppID = d.ctxCfg.Config.ClientKey()
+    }
+    
     var accessToken string
     if ctx, accessToken, err = d.setContext(ctx); err != nil {
         return nil, err
