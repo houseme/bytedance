@@ -128,7 +128,7 @@ type AlbumInfo struct {
     Year           int         `json:"year" description:"短剧发行年份"`
     AlbumStatus    int         `json:"album_status" description:"短剧更新状态：1-未上映，2-更新中，3-已完结"`
     Qualification  int         `json:"qualification" description:"资质状态：1-未报审，2-报审通过，3-报审不通过，4-不建议报审"`
-    RecordInfo     *RecordInfo `json:"record_info" description:"备案信息"`
+    RecordInfo     *RecordInfo `json:"record_info,omitempty" description:"备案信息"`
     Desp           string      `json:"desp" description:"短剧简介（200 汉字以内）"`
     Recommendation string      `json:"recommendation" description:"短剧推荐语（12 汉字以内）"`
     TagList        []int       `json:"tag_list" description:"短剧标签，最多 3 个"`
