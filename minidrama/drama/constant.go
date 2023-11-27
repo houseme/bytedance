@@ -77,6 +77,13 @@ const (
     
     // DefaultAsyncVersion 异步版本号
     DefaultAsyncVersion = "2.0"
+    
+    // QueryTypeAll 查询类型：1-查询小程序下所有短剧信息，2-查询一个短剧所有版本信息，3-查询一个短剧某个版本下所有剧集信息
+    QueryTypeAll = 1
+    // QueryTypeOne 查询类型：1-查询小程序下所有短剧信息，2-查询一个短剧所有版本信息，3-查询一个短剧某个版本下所有剧集信息
+    QueryTypeOne = 2
+    // QueryTypeOneVersion 查询类型：1-查询小程序下所有短剧信息，2-查询一个短剧所有版本信息，3-查询一个短剧某个版本下所有剧集信息
+    QueryTypeOneVersion = 3
 )
 
 const (
