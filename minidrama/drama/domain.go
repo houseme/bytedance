@@ -184,7 +184,7 @@ type EditVideoResponse struct {
 type EditVideoData struct {
     AlbumID      int64             `json:"album_id"`
     Version      int               `json:"version" description:"短剧的版本号（审核后再编辑版本会增加）"`
-    EpisodeIdMap map[string]string `json:"episode_id_map" description:"剧集 ID 映射，key 为 seq，value 为剧集 ID"`
+    EpisodeIdMap map[string]uint64 `json:"episode_id_map" description:"剧集 ID 映射，key 为 seq，value 为剧集 ID"`
 }
 
 // QueryVideoAlbumRequest 查询视频专辑
