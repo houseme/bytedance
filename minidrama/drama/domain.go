@@ -219,14 +219,17 @@ type DetailQuery struct {
 
 // QueryVideoAlbumResponse 查询视频专辑
 type QueryVideoAlbumResponse struct {
-    ErrNo int `json:"err_no"`
-    Data  struct {
-        BatchData  *BatchData  `json:"batch_data,omitempty"`
-        SingleData *SingleData `json:"single_data,omitempty"`
-        DetailData *DetailData `json:"detail_data,omitempty"`
-    } `json:"data"`
-    ErrMsg string `json:"err_msg"`
-    LogID  string `json:"log_id"`
+    ErrNo  int                  `json:"err_no"`
+    Data   *QueryVideoAlbumData `json:"data"`
+    ErrMsg string               `json:"err_msg"`
+    LogID  string               `json:"log_id"`
+}
+
+// QueryVideoAlbumData 查询视频专辑
+type QueryVideoAlbumData struct {
+    BatchData  *BatchData  `json:"batch_data,omitempty"`
+    SingleData *SingleData `json:"single_data,omitempty"`
+    DetailData *DetailData `json:"detail_data,omitempty"`
 }
 
 // BatchData 批量数据
