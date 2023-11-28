@@ -65,7 +65,6 @@ const (
     // ErrNoSystemError system error 错误码
     ErrNoSystemError = 10000
     
-    
     // ErrTipsSuccess = "success"
     ErrTipsSuccess = "success"
     // ErrTipsVersion = "version error"
@@ -87,6 +86,24 @@ const (
     
     // LimitMax 最大限制
     LimitMax = 50
+    
+    // AuditStatusNot 审核状态：99-未审核：98-审核中，1-不可播放，2-可播放
+    // AuditStatusNot 审核状态：99-未审核：98-审核中，1-不可播放，2-可播放
+    AuditStatusNot = 99
+    // AuditStatusReviewing 审核状态：99-未审核：98-审核中，1-不可播放，2-可播放
+    AuditStatusReviewing = 98
+    // AuditStatusNotPass 审核状态：99-未审核：98-审核中，1-不可播放，2-可播放
+    AuditStatusNotPass = 1
+    // AuditStatusPass 审核状态：99-未审核：98-审核中，1-不可播放，2-可播放
+    AuditStatusPass = 2
+    
+    // StatusNot  状态：1-未提交，2-已提交，3-已审出
+    // StatusNot 状态：1-未提交，2-已提交，3-已审出
+    StatusNot = 1
+    // StatusSubmit 状态：1-未提交，2-已提交，3-已审出
+    StatusSubmit = 2
+    // StatusReview 状态：1-未提交，2-已提交，3-已审出
+    StatusReview = 3
 )
 
 const (
