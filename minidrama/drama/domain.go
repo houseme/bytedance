@@ -245,9 +245,11 @@ type SingleData struct {
 
 // AlbumAuditInfo 专辑审核信息
 type AlbumAuditInfo struct {
-    Status  int   `json:"status"`
-    AlbumID int64 `json:"album_id"`
-    Version int   `json:"version"`
+    Status      int    `json:"status" description:"专辑状态：1-未提交，2-已提交，3-已审出"`
+    AlbumID     int64  `json:"album_id"`
+    Version     int    `json:"version"`
+    AuditStatus int    `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
+    AuditMsg    string `json:"auditMsg" description:"审核备注"`
 }
 
 // AlbumInfoResp 专辑信息
@@ -275,9 +277,11 @@ type RecordInfoResp struct {
 
 // EpisodeAuditInfo 剧集审核信息
 type EpisodeAuditInfo struct {
-    EpisodeID int64 `json:"episode_id"`
-    Version   int   `json:"version"`
-    Status    int   `json:"status"`
+    EpisodeID   int64  `json:"episode_id"`
+    Version     int    `json:"version"`
+    Status      int    `json:"status" description:"剧集状态：1-未提交，2-已提交，3-已审出"`
+    AuditStatus int    `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
+    AuditMsg    string `json:"auditMsg" description:"审核备注"`
 }
 
 // EpisodeInfoResp 剧集信息
