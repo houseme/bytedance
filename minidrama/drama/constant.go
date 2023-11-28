@@ -84,6 +84,9 @@ const (
     QueryTypeOne = 2
     // QueryTypeOneVersion 查询类型：1-查询小程序下所有短剧信息，2-查询一个短剧所有版本信息，3-查询一个短剧某个版本下所有剧集信息
     QueryTypeOneVersion = 3
+    
+    // LimitMax 最大限制
+    LimitMax = 50
 )
 
 const (
