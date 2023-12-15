@@ -292,7 +292,7 @@ func (d *Drama) OnlineAlbum(ctx context.Context, req *OnlineAlbumRequest) (resp 
     return
 }
 
-// BindAlbum 绑定视频专辑
+// BindAlbum 绑定视频专辑 页面绑定
 func (d *Drama) BindAlbum(ctx context.Context, req *BindAlbumRequest) (resp *BindAlbumResponse, err error) {
     if req == nil {
         return nil, base.ErrRequestIsEmpty

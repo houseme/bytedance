@@ -413,11 +413,12 @@ type AsyncRequest struct {
 
 // AsyncAlbumAudit 异步专辑审核
 type AsyncAlbumAudit struct {
-    MaAppID     string `json:"ma_app_id"`
-    AlbumID     int64  `json:"album_id"`
-    Version     int    `json:"version"`
-    AuditStatus int    `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
-    AuditMsg    string `json:"auditMsg" description:"审核备注"`
+    MaAppID     string   `json:"ma_app_id"`
+    AlbumID     int64    `json:"album_id"`
+    Version     int      `json:"version"`
+    AuditStatus int      `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
+    AuditMsg    string   `json:"auditMsg" description:"审核备注"`
+    ScopeList   []string `json:"scope_list" description:"能力列表，当前短剧所拥有的能力，目前共 3 种（播放，投广，挂载）"`
 }
 
 // AsyncEpisodeAudit 剧集审核

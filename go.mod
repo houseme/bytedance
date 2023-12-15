@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/redis/go-redis/v9 v9.3.0
-	golang.org/x/crypto v0.15.0
+	golang.org/x/crypto v0.16.0
 )
 
 require (
