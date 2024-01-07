@@ -249,7 +249,7 @@ type AlbumAuditInfo struct {
     AlbumID     int64  `json:"album_id"`
     Version     int    `json:"version"`
     AuditStatus int    `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
-    AuditMsg    string `json:"auditMsg" description:"审核备注"`
+    AuditMsg    string `json:"audit_msg" description:"审核备注"`
 }
 
 // AlbumInfoResp 专辑信息
@@ -281,7 +281,7 @@ type EpisodeAuditInfo struct {
     Version     int    `json:"version"`
     Status      int    `json:"status" description:"剧集状态：1-未提交，2-已提交，3-已审出"`
     AuditStatus int    `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
-    AuditMsg    string `json:"auditMsg" description:"审核备注"`
+    AuditMsg    string `json:"audit_msg" description:"审核备注"`
 }
 
 // EpisodeInfoResp 剧集信息
@@ -417,7 +417,7 @@ type AsyncAlbumAudit struct {
     AlbumID     int64    `json:"album_id"`
     Version     int      `json:"version"`
     AuditStatus int      `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
-    AuditMsg    string   `json:"auditMsg" description:"审核备注"`
+    AuditMsg    string   `json:"audit_msg" description:"审核备注"`
     ScopeList   []string `json:"scope_list" description:"能力列表，当前短剧所拥有的能力，目前共 3 种（播放，投广，挂载）"`
 }
 
@@ -428,7 +428,7 @@ type AsyncEpisodeAudit struct {
     EpisodeID   int64  `json:"episode_id"`
     Version     int    `json:"version"`
     AuditStatus int    `json:"audit_status" description:"审核状态：99-未审核：98-审核中，1-不可播放，2-可播放"`
-    AuditMsg    string `json:"auditMsg" description:"审核备注"`
+    AuditMsg    string `json:"audit_msg" description:"审核备注"`
 }
 
 // AsyncUploadVideo 上传视频

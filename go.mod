@@ -3,8 +3,8 @@ module github.com/houseme/bytedance
 go 1.20
 
 require (
-	github.com/redis/go-redis/v9 v9.3.0
-	golang.org/x/crypto v0.16.0
+	github.com/redis/go-redis/v9 v9.4.0
+	golang.org/x/crypto v0.17.0
 )
 
 require (
