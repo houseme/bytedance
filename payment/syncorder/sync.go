@@ -21,44 +21,44 @@
 package syncorder
 
 import (
-    "context"
-    "encoding/json"
-    
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/payment/constant"
-    "github.com/houseme/bytedance/utility/base"
+	"context"
+	"encoding/json"
+
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/payment/constant"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 // Sync sync
 type Sync struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // NewSync init
 func NewSync(cfg *credential.ContextConfig) *Sync {
-    return &Sync{ctxCfg: cfg}
+	return &Sync{ctxCfg: cfg}
 }
 
 // PushOrder push order
 // see https://developer.toutiao.com/docs/miniapps/miniplatform/payment/order-sync/order-sync
 func (s *Sync) PushOrder(ctx context.Context, req *OrderSyncRequest) (resp *OrderSyncResponse, err error) {
-    if req == nil {
-        return nil, base.ErrRequestIsEmpty
-    }
-    var clientToken *credential.ServerAccessToken
-    if clientToken, err = s.ctxCfg.GetServerAccessToken(ctx); err != nil {
-        return nil, err
-    }
-    if clientToken == nil {
-        return nil, base.ErrClientTokenIsEmpty
-    }
-    req.AccessToken = clientToken.AccessToken
-    
-    var response []byte
-    if response, err = s.ctxCfg.Request().PostJSON(ctx, constant.OrderPush, *req); err != nil {
-        return nil, err
-    }
-    resp = &OrderSyncResponse{}
-    err = json.Unmarshal(response, &resp)
-    return
+	if req == nil {
+		return nil, base.ErrRequestIsEmpty
+	}
+	var clientToken *credential.ServerAccessToken
+	if clientToken, err = s.ctxCfg.GetServerAccessToken(ctx); err != nil {
+		return nil, err
+	}
+	if clientToken == nil {
+		return nil, base.ErrClientTokenIsEmpty
+	}
+	req.AccessToken = clientToken.AccessToken
+
+	var response []byte
+	if response, err = s.ctxCfg.Request().PostJSON(ctx, constant.OrderPush, *req); err != nil {
+		return nil, err
+	}
+	resp = &OrderSyncResponse{}
+	err = json.Unmarshal(response, &resp)
+	return
 }

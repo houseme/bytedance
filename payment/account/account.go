@@ -20,41 +20,41 @@
 package account
 
 import (
-    "context"
-    "encoding/json"
-    "strings"
-    
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/payment/constant"
-    "github.com/houseme/bytedance/utility/base"
-    "github.com/houseme/bytedance/utility/helper"
+	"context"
+	"encoding/json"
+	"strings"
+
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/payment/constant"
+	"github.com/houseme/bytedance/utility/base"
+	"github.com/houseme/bytedance/utility/helper"
 )
 
 // Account merchant accounts
 type Account struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // NewAccount init
 func NewAccount(cfg *credential.ContextConfig) *Account {
-    return &Account{ctxCfg: cfg}
+	return &Account{ctxCfg: cfg}
 }
 
 // QueryBalance query balance
 func (a *Account) QueryBalance(ctx context.Context, req *QueryMerchantAccountRequest) (res *QueryMerchantAccountResponse, err error) {
-    if req == nil {
-        return nil, base.ErrRequestIsEmpty
-    }
-    
-    if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
-        req.AppID = a.ctxCfg.Config.ClientKey()
-    }
-    req.Sign = helper.RequestSign(ctx, *req, a.ctxCfg.Config.Salt())
-    var response []byte
-    if response, err = a.ctxCfg.Request().PostJSON(ctx, constant.QueryMerchantBalance, *req); err != nil {
-        return nil, err
-    }
-    res = &QueryMerchantAccountResponse{}
-    err = json.Unmarshal(response, res)
-    return
+	if req == nil {
+		return nil, base.ErrRequestIsEmpty
+	}
+
+	if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
+		req.AppID = a.ctxCfg.Config.ClientKey()
+	}
+	req.Sign = helper.RequestSign(ctx, *req, a.ctxCfg.Config.Salt())
+	var response []byte
+	if response, err = a.ctxCfg.Request().PostJSON(ctx, constant.QueryMerchantBalance, *req); err != nil {
+		return nil, err
+	}
+	res = &QueryMerchantAccountResponse{}
+	err = json.Unmarshal(response, res)
+	return
 }

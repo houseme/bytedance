@@ -21,45 +21,45 @@
 package bill
 
 import (
-    "context"
-    "encoding/json"
-    "strings"
-    
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/payment/constant"
-    "github.com/houseme/bytedance/utility/base"
-    "github.com/houseme/bytedance/utility/helper"
+	"context"
+	"encoding/json"
+	"strings"
+
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/payment/constant"
+	"github.com/houseme/bytedance/utility/base"
+	"github.com/houseme/bytedance/utility/helper"
 )
 
 // Bill merchant accounts bill
 type Bill struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // NewBill init
 func NewBill(cfg *credential.ContextConfig) *Bill {
-    return &Bill{ctxCfg: cfg}
+	return &Bill{ctxCfg: cfg}
 }
 
 // QueryBill query bill
 func (b *Bill) QueryBill(ctx context.Context, req *QueryBillRequest) (resp *QueryBillResponse, err error) {
-    if req == nil {
-        return nil, base.ErrRequestIsEmpty
-    }
-    
-    if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
-        req.AppID = b.ctxCfg.Config.ClientKey()
-    }
-    req.Sign = helper.RequestSign(ctx, *req, b.ctxCfg.Config.Salt())
-    var (
-        values   = req.ToURLValues()
-        response []byte
-    )
-    
-    if response, err = b.ctxCfg.Request().Get(ctx, constant.QueryMerchantBill+values.Encode()); err != nil {
-        return nil, err
-    }
-    resp = &QueryBillResponse{}
-    err = json.Unmarshal(response, resp)
-    return
+	if req == nil {
+		return nil, base.ErrRequestIsEmpty
+	}
+
+	if strings.TrimSpace(req.ThirdPartyID) == "" && strings.TrimSpace(req.AppID) == "" {
+		req.AppID = b.ctxCfg.Config.ClientKey()
+	}
+	req.Sign = helper.RequestSign(ctx, *req, b.ctxCfg.Config.Salt())
+	var (
+		values   = req.ToURLValues()
+		response []byte
+	)
+
+	if response, err = b.ctxCfg.Request().Get(ctx, constant.QueryMerchantBill+values.Encode()); err != nil {
+		return nil, err
+	}
+	resp = &QueryBillResponse{}
+	err = json.Unmarshal(response, resp)
+	return
 }

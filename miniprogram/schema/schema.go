@@ -21,124 +21,124 @@
 package schema
 
 import (
-    "context"
-    "encoding/json"
-    
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/utility/base"
+	"context"
+	"encoding/json"
+
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 const (
-    generateSchemaURL = "https://open.douyin.com/api/apps/v1/url/generate_schema"
-    querySchemaURL    = "https://open.douyin.com/api/apps/v1/url/query_schema"
-    querySchemaQuota  = "https://open.douyin.com/api/apps/v1/url/query_schema_quota"
+	generateSchemaURL = "https://open.douyin.com/api/apps/v1/url/generate_schema"
+	querySchemaURL    = "https://open.douyin.com/api/apps/v1/url/query_schema"
+	querySchemaQuota  = "https://open.douyin.com/api/apps/v1/url/query_schema_quota"
 )
 
 // GenerateSchemaRequest generate schema request
 type GenerateSchemaRequest struct {
-    AppID      string `json:"app_id"`
-    Query      string `json:"query,omitempty"`
-    Path       string `json:"path,omitempty"`
-    NoExpire   bool   `json:"no_expire"`
-    ExpireTime int    `json:"expire_time,omitempty"`
+	AppID      string `json:"app_id"`
+	Query      string `json:"query,omitempty"`
+	Path       string `json:"path,omitempty"`
+	NoExpire   bool   `json:"no_expire"`
+	ExpireTime int    `json:"expire_time,omitempty"`
 }
 
 // GenerateSchemaResponse generate schema response
 type GenerateSchemaResponse struct {
-    base.CommonResponse
-    Data GenerateSchemaData `json:"data"`
+	base.CommonResponse
+	Data GenerateSchemaData `json:"data"`
 }
 
 // GenerateSchemaData generate schema data
 type GenerateSchemaData struct {
-    Schema string `json:"schema"`
+	Schema string `json:"schema"`
 }
 
 // QuerySchemaRequest query schema request
 type QuerySchemaRequest struct {
-    Schema string `json:"schema"`
-    AppID  string `json:"app_id"`
+	Schema string `json:"schema"`
+	AppID  string `json:"app_id"`
 }
 
 // QuerySchemaResponse query schema response
 type QuerySchemaResponse struct {
-    base.CommonResponse
-    Data QuerySchemaData `json:"data"`
+	base.CommonResponse
+	Data QuerySchemaData `json:"data"`
 }
 
 // QuerySchemaData query schema data
 type QuerySchemaData struct {
-    AppID      string `json:"app_id"`
-    Path       string `json:"path"`
-    Query      string `json:"query"`
-    CreateTime int    `json:"create_time"`
-    ExpireTime int    `json:"expire_time"`
+	AppID      string `json:"app_id"`
+	Path       string `json:"path"`
+	Query      string `json:"query"`
+	CreateTime int    `json:"create_time"`
+	ExpireTime int    `json:"expire_time"`
 }
 
 // QuerySchemaQuotaRequest query schema quota request
 type QuerySchemaQuotaRequest struct {
-    AppID string `json:"app_id"`
+	AppID string `json:"app_id"`
 }
 
 // QuerySchemaQuotaResponse query schema quota response
 type QuerySchemaQuotaResponse struct {
-    base.CommonResponse
-    Data QuerySchemaQuotaData `json:"data"`
+	base.CommonResponse
+	Data QuerySchemaQuotaData `json:"data"`
 }
 
 // TermSchemaQuota term schema quota
 type TermSchemaQuota struct {
-    SchemaLimit int `json:"schema_limit"`
-    SchemaUsed  int `json:"schema_used"`
+	SchemaLimit int `json:"schema_limit"`
+	SchemaUsed  int `json:"schema_used"`
 }
 
 // QuerySchemaQuotaData query schema quota data
 type QuerySchemaQuotaData struct {
-    LongTermSchemaQuota  TermSchemaQuota `json:"long_term_schema_quota"`
-    ShortTermSchemaQuota TermSchemaQuota `json:"short_term_schema_quota"`
+	LongTermSchemaQuota  TermSchemaQuota `json:"long_term_schema_quota"`
+	ShortTermSchemaQuota TermSchemaQuota `json:"short_term_schema_quota"`
 }
 
 // Schema create schema
 type Schema struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // New create schema
 func New(cfg *credential.ContextConfig) *Schema {
-    return &Schema{
-        ctxCfg: cfg,
-    }
+	return &Schema{
+		ctxCfg: cfg,
+	}
 }
 
 // Generate generate schema
 func (s *Schema) Generate(ctx context.Context, request *GenerateSchemaRequest) (response *GenerateSchemaResponse, err error) {
-    var resp []byte
-    if resp, err = s.ctxCfg.Request().PostJSON(ctx, generateSchemaURL, request); err != nil {
-        return
-    }
-    response = new(GenerateSchemaResponse)
-    err = json.Unmarshal(resp, &response)
-    return
+	var resp []byte
+	if resp, err = s.ctxCfg.Request().PostJSON(ctx, generateSchemaURL, request); err != nil {
+		return
+	}
+	response = new(GenerateSchemaResponse)
+	err = json.Unmarshal(resp, &response)
+	return
 }
 
 // Query query schema
 func (s *Schema) Query(ctx context.Context, request *QuerySchemaRequest) (response *QuerySchemaResponse, err error) {
-    var resp []byte
-    if resp, err = s.ctxCfg.Request().PostJSON(ctx, querySchemaURL, request); err != nil {
-        return
-    }
-    response = new(QuerySchemaResponse)
-    err = json.Unmarshal(resp, &response)
-    return
+	var resp []byte
+	if resp, err = s.ctxCfg.Request().PostJSON(ctx, querySchemaURL, request); err != nil {
+		return
+	}
+	response = new(QuerySchemaResponse)
+	err = json.Unmarshal(resp, &response)
+	return
 }
 
 // QueryQuota query schema quota
 func (s *Schema) QueryQuota(ctx context.Context, request *QuerySchemaQuotaRequest) (response *QuerySchemaQuotaResponse, err error) {
-    var resp []byte
-    if resp, err = s.ctxCfg.Request().PostJSON(ctx, querySchemaQuota, request); err != nil {
-        return
-    }
-    response = new(QuerySchemaQuotaResponse)
-    err = json.Unmarshal(resp, &response)
-    return
+	var resp []byte
+	if resp, err = s.ctxCfg.Request().PostJSON(ctx, querySchemaQuota, request); err != nil {
+		return
+	}
+	response = new(QuerySchemaQuotaResponse)
+	err = json.Unmarshal(resp, &response)
+	return
 }

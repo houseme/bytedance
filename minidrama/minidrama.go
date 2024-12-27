@@ -21,55 +21,55 @@
 package minidrama
 
 import (
-    "context"
-    
-    "github.com/houseme/bytedance/config"
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/minidrama/drama"
-    "github.com/houseme/bytedance/minidrama/voc"
-    "github.com/houseme/bytedance/utility/base"
+	"context"
+
+	"github.com/houseme/bytedance/config"
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/minidrama/drama"
+	"github.com/houseme/bytedance/minidrama/voc"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 // MiniDrama mini drama
 type MiniDrama struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // New return new mini drama
 func New(ctx context.Context, cfg *config.Config) (*MiniDrama, error) {
-    if cfg == nil {
-        return nil, base.ErrConfigNotFound
-    }
-    if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
-    }
-    if cfg.Salt() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("salt")
-    }
-    
-    if cfg.Token() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("token")
-    }
-    
-    return &MiniDrama{
-        ctxCfg: &credential.ContextConfig{
-            Config:            cfg,
-            AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
-        },
-    }, nil
+	if cfg == nil {
+		return nil, base.ErrConfigNotFound
+	}
+	if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
+	}
+	if cfg.Salt() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("salt")
+	}
+
+	if cfg.Token() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("token")
+	}
+
+	return &MiniDrama{
+		ctxCfg: &credential.ContextConfig{
+			Config:            cfg,
+			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
+		},
+	}, nil
 }
 
 // ContextConfig context config
 func (d *MiniDrama) ContextConfig() *credential.ContextConfig {
-    return d.ctxCfg
+	return d.ctxCfg
 }
 
 // Drama return drama
 func (d *MiniDrama) Drama() *drama.Drama {
-    return drama.NewDrama(d.ContextConfig())
+	return drama.NewDrama(d.ContextConfig())
 }
 
 // Voc return voc
 func (d *MiniDrama) Voc() *voc.Voc {
-    return voc.NewVoc(d.ContextConfig())
+	return voc.NewVoc(d.ContextConfig())
 }

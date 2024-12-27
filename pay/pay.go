@@ -21,85 +21,85 @@
 package pay
 
 import (
-    "context"
-    
-    "github.com/houseme/bytedance/config"
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/pay/asyncnotify"
-    "github.com/houseme/bytedance/pay/refund"
-    "github.com/houseme/bytedance/pay/settle"
-    "github.com/houseme/bytedance/pay/trade"
-    "github.com/houseme/bytedance/pay/withdraw"
-    "github.com/houseme/bytedance/utility/base"
+	"context"
+
+	"github.com/houseme/bytedance/config"
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/pay/asyncnotify"
+	"github.com/houseme/bytedance/pay/refund"
+	"github.com/houseme/bytedance/pay/settle"
+	"github.com/houseme/bytedance/pay/trade"
+	"github.com/houseme/bytedance/pay/withdraw"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 // Pay payment
 type Pay struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // NewPay create payment
 func NewPay(ctx context.Context, cfg *config.Config) (*Pay, error) {
-    if cfg == nil {
-        return nil, base.ErrConfigNotFound
-    }
-    if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
-    }
-    if cfg.Salt() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("salt")
-    }
-    
-    if cfg.Token() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("token")
-    }
-    
-    if cfg.KeyVersion() < 0 {
-        return nil, base.ErrConfigKeyValueEmpty("key version")
-    }
-    
-    if cfg.PublicKey() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("public key")
-    }
-    
-    if cfg.PrivateKey() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("private key")
-    }
-    
-    return &Pay{
-        ctxCfg: &credential.ContextConfig{
-            Config:            cfg,
-            AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
-        },
-    }, nil
+	if cfg == nil {
+		return nil, base.ErrConfigNotFound
+	}
+	if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
+	}
+	if cfg.Salt() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("salt")
+	}
+
+	if cfg.Token() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("token")
+	}
+
+	if cfg.KeyVersion() < 0 {
+		return nil, base.ErrConfigKeyValueEmpty("key version")
+	}
+
+	if cfg.PublicKey() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("public key")
+	}
+
+	if cfg.PrivateKey() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("private key")
+	}
+
+	return &Pay{
+		ctxCfg: &credential.ContextConfig{
+			Config:            cfg,
+			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
+		},
+	}, nil
 }
 
 // ContextConfig context config
 func (p *Pay) ContextConfig() *credential.ContextConfig {
-    return p.ctxCfg
+	return p.ctxCfg
 }
 
 // Trade payment trade relation
 func (p *Pay) Trade() *trade.Trade {
-    return trade.NewTrade(p.ContextConfig())
+	return trade.NewTrade(p.ContextConfig())
 }
 
 // Withdraw cash
 func (p *Pay) Withdraw() *withdraw.Withdraw {
-    return withdraw.NewWithdraw(p.ContextConfig())
+	return withdraw.NewWithdraw(p.ContextConfig())
 }
 
 // Settle account cash
 func (p *Pay) Settle() *settle.Settle {
-    return settle.NewSettle(p.ContextConfig())
+	return settle.NewSettle(p.ContextConfig())
 }
 
 // Refund order cash
 func (p *Pay) Refund() *refund.Refund {
-    return refund.NewRefund(p.ContextConfig())
+	return refund.NewRefund(p.ContextConfig())
 }
 
 // AsyncNotify async
 func (p *Pay) AsyncNotify() *asyncnotify.AsyncNotify {
-    return asyncnotify.NewAsyncNotify(p.ContextConfig())
+	return asyncnotify.NewAsyncNotify(p.ContextConfig())
 }

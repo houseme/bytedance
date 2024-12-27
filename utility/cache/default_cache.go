@@ -20,72 +20,72 @@
 package cache
 
 import (
-    "context"
-    "time"
-    
-    "github.com/redis/go-redis/v9"
+	"context"
+	"time"
+
+	"github.com/redis/go-redis/v9"
 )
 
 // Redis .redis cache
 type Redis struct {
-    conn redis.UniversalClient
+	conn redis.UniversalClient
 }
 
 // RedisOpts Redis 连接属性
 type RedisOpts struct {
-    Host        string `yml:"host" json:"host"`
-    Password    string `yml:"password" json:"password"`
-    Database    int    `yml:"database" json:"database"`
-    MaxIdle     int    `yml:"max_idle" json:"max_idle"`
-    IdleTimeout int    `yml:"idle_timeout" json:"idle_timeout"`
+	Host        string `yml:"host" json:"host"`
+	Password    string `yml:"password" json:"password"`
+	Database    int    `yml:"database" json:"database"`
+	MaxIdle     int    `yml:"max_idle" json:"max_idle"`
+	IdleTimeout int    `yml:"idle_timeout" json:"idle_timeout"`
 }
 
 // NewDefaultRedisOpts 实例化
 func NewDefaultRedisOpts() *RedisOpts {
-    return &RedisOpts{
-        Host:     "127.0.0.1:6379",
-        Password: "",
-        Database: 0,
-    }
+	return &RedisOpts{
+		Host:     "127.0.0.1:6379",
+		Password: "",
+		Database: 0,
+	}
 }
 
 // NewRedis 实例化
 func NewRedis(_ context.Context, opts *RedisOpts) *Redis {
-    return &Redis{conn: redis.NewUniversalClient(&redis.UniversalOptions{
-        Addrs:           []string{opts.Host},
-        DB:              opts.Database,
-        Password:        opts.Password,
-        ConnMaxIdleTime: time.Second * time.Duration(opts.IdleTimeout),
-        MinIdleConns:    opts.MaxIdle,
-    }),
-    }
+	return &Redis{conn: redis.NewUniversalClient(&redis.UniversalOptions{
+		Addrs:           []string{opts.Host},
+		DB:              opts.Database,
+		Password:        opts.Password,
+		ConnMaxIdleTime: time.Second * time.Duration(opts.IdleTimeout),
+		MinIdleConns:    opts.MaxIdle,
+	}),
+	}
 }
 
 // SetConn 设置 conn
 func (r *Redis) SetConn(conn redis.UniversalClient) {
-    r.conn = conn
+	r.conn = conn
 }
 
 // Get 获取一个值
 func (r *Redis) Get(ctx context.Context, key string) interface{} {
-    result := r.conn.Get(ctx, key)
-    if result.Err() != nil {
-        return ""
-    }
-    return result.Val()
+	result := r.conn.Get(ctx, key)
+	if result.Err() != nil {
+		return ""
+	}
+	return result.Val()
 }
 
 // Set 设置一个值
 func (r *Redis) Set(ctx context.Context, key string, val interface{}, timeout time.Duration) error {
-    return r.conn.SetEx(ctx, key, val, timeout).Err()
+	return r.conn.SetEx(ctx, key, val, timeout).Err()
 }
 
 // IsExist 判断 key 是否存在
 func (r *Redis) IsExist(ctx context.Context, key string) bool {
-    return r.conn.Exists(ctx, key).Val() > 0
+	return r.conn.Exists(ctx, key).Val() > 0
 }
 
 // Delete 删除
 func (r *Redis) Delete(ctx context.Context, key string) error {
-    return r.conn.Del(ctx, key).Err()
+	return r.conn.Del(ctx, key).Err()
 }

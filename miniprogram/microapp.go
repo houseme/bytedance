@@ -21,85 +21,85 @@
 package miniprogram
 
 import (
-    "context"
-    
-    "github.com/houseme/bytedance/config"
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/miniprogram/authorize"
-    "github.com/houseme/bytedance/miniprogram/link"
-    "github.com/houseme/bytedance/miniprogram/qrcode"
-    "github.com/houseme/bytedance/miniprogram/schema"
-    "github.com/houseme/bytedance/miniprogram/solution"
-    "github.com/houseme/bytedance/utility/base"
+	"context"
+
+	"github.com/houseme/bytedance/config"
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/miniprogram/authorize"
+	"github.com/houseme/bytedance/miniprogram/link"
+	"github.com/houseme/bytedance/miniprogram/qrcode"
+	"github.com/houseme/bytedance/miniprogram/schema"
+	"github.com/houseme/bytedance/miniprogram/solution"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 // MicroApp mini program
 type MicroApp struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // New micro app
 func New(ctx context.Context, cfg *config.Config) (*MicroApp, error) {
-    if cfg == nil {
-        return nil, base.ErrConfigNotFound
-    }
-    if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
-        return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
-    }
-    
-    return &MicroApp{
-        ctxCfg: &credential.ContextConfig{
-            Config:            cfg,
-            AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
-        },
-    }, nil
+	if cfg == nil {
+		return nil, base.ErrConfigNotFound
+	}
+	if cfg.ClientKey() == "" || cfg.ClientSecret() == "" {
+		return nil, base.ErrConfigKeyValueEmpty("clientKey or clientSecret")
+	}
+
+	return &MicroApp{
+		ctxCfg: &credential.ContextConfig{
+			Config:            cfg,
+			AccessTokenHandle: credential.NewDefaultAccessToken(ctx, cfg),
+		},
+	}, nil
 }
 
 // SetAccessTokenHandle 自定义 access_token 获取方式
 func (ma *MicroApp) SetAccessTokenHandle(accessTokenHandle credential.AccessTokenHandle) {
-    ma.ctxCfg.AccessTokenHandle = accessTokenHandle
+	ma.ctxCfg.AccessTokenHandle = accessTokenHandle
 }
 
 // GetContext get Context
 func (ma *MicroApp) GetContext() *credential.ContextConfig {
-    return ma.ctxCfg
+	return ma.ctxCfg
 }
 
 // GetAccessToken 获取 access_token
 func (ma *MicroApp) GetAccessToken(ctx context.Context, openID string) (string, error) {
-    return ma.ctxCfg.GetAccessToken(ctx, openID)
+	return ma.ctxCfg.GetAccessToken(ctx, openID)
 }
 
 // GetClientToken 获取 client_token
 func (ma *MicroApp) GetClientToken(ctx context.Context) (string, error) {
-    clientToken, err := ma.ctxCfg.GetClientToken(ctx)
-    if err != nil {
-        return "", err
-    }
-    return clientToken.AccessToken, nil
+	clientToken, err := ma.ctxCfg.GetClientToken(ctx)
+	if err != nil {
+		return "", err
+	}
+	return clientToken.AccessToken, nil
 }
 
 // GetAuthorize oauth2 网页授权
 func (ma *MicroApp) GetAuthorize() *authorize.Authorize {
-    return authorize.NewAuthorize(ma.ctxCfg)
+	return authorize.NewAuthorize(ma.ctxCfg)
 }
 
 // GetQrcode 获取小程序码
 func (ma *MicroApp) GetQrcode() *qrcode.QRCode {
-    return qrcode.NewQRCode(ma.ctxCfg)
+	return qrcode.NewQRCode(ma.ctxCfg)
 }
 
 // GetLink 获取小程序 link
 func (ma *MicroApp) GetLink() *link.Link {
-    return link.New(ma.ctxCfg)
+	return link.New(ma.ctxCfg)
 }
 
 // GetSchema 获取小程序 schema
 func (ma *MicroApp) GetSchema() *schema.Schema {
-    return schema.New(ma.ctxCfg)
+	return schema.New(ma.ctxCfg)
 }
 
 // GetSolution 获取小程序解决方案
 func (ma *MicroApp) GetSolution() *solution.Solution {
-    return solution.NewSolution(ma.ctxCfg)
+	return solution.NewSolution(ma.ctxCfg)
 }

@@ -20,82 +20,82 @@
 package solution
 
 import (
-    "context"
-    "encoding/json"
-    "strings"
-    
-    "github.com/houseme/bytedance/config"
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/utility/base"
+	"context"
+	"encoding/json"
+	"strings"
+
+	"github.com/houseme/bytedance/config"
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/utility/base"
 )
 
 // Solution 解决方案
 type Solution struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // NewSolution init
 func NewSolution(cfg *credential.ContextConfig) *Solution {
-    return &Solution{ctxCfg: cfg}
+	return &Solution{ctxCfg: cfg}
 }
 
 // getAccessToken 获取 access_token
 func (s *Solution) getAccessToken(ctx context.Context) (accessToken string, err error) {
-    var clientToken *credential.ClientToken
-    if clientToken, err = s.ctxCfg.GetClientToken(ctx); err != nil {
-        return "", err
-    }
-    if clientToken == nil {
-        return "", base.ErrClientTokenIsEmpty
-    }
-    
-    if strings.TrimSpace(clientToken.AccessToken) == "" {
-        return "", base.ErrClientAccessTokenIsEmpty
-    }
-    
-    return clientToken.AccessToken, nil
+	var clientToken *credential.ClientToken
+	if clientToken, err = s.ctxCfg.GetClientToken(ctx); err != nil {
+		return "", err
+	}
+	if clientToken == nil {
+		return "", base.ErrClientTokenIsEmpty
+	}
+
+	if strings.TrimSpace(clientToken.AccessToken) == "" {
+		return "", base.ErrClientAccessTokenIsEmpty
+	}
+
+	return clientToken.AccessToken, nil
 }
 
 // CreateSolution 创建解决方案
 func (s *Solution) CreateSolution(ctx context.Context, req *CreateSolutionRequest) (resp *CreateSolutionResponse, err error) {
-    if req == nil {
-        return nil, base.ErrRequestIsEmpty
-    }
-    
-    var accessToken string
-    if accessToken, err = s.getAccessToken(ctx); err != nil {
-        return nil, err
-    }
-    ctx = context.WithValue(ctx, config.AccessTokenKey, accessToken)
-    var response []byte
-    if response, err = s.ctxCfg.Request().PostJSON(ctx, setImpl+accessToken, *req); err != nil {
-        return nil, err
-    }
-    
-    resp = &CreateSolutionResponse{}
-    err = json.Unmarshal(response, &resp)
-    
-    return
+	if req == nil {
+		return nil, base.ErrRequestIsEmpty
+	}
+
+	var accessToken string
+	if accessToken, err = s.getAccessToken(ctx); err != nil {
+		return nil, err
+	}
+	ctx = context.WithValue(ctx, config.AccessTokenKey, accessToken)
+	var response []byte
+	if response, err = s.ctxCfg.Request().PostJSON(ctx, setImpl+accessToken, *req); err != nil {
+		return nil, err
+	}
+
+	resp = &CreateSolutionResponse{}
+	err = json.Unmarshal(response, &resp)
+
+	return
 }
 
 // QuerySolution 查询解决方案
 func (s *Solution) QuerySolution(ctx context.Context, req *QuerySolutionRequest) (resp *QuerySolutionResponse, err error) {
-    if req == nil {
-        return nil, base.ErrRequestIsEmpty
-    }
-    
-    var accessToken string
-    if accessToken, err = s.getAccessToken(ctx); err != nil {
-        return nil, err
-    }
-    ctx = context.WithValue(ctx, config.AccessTokenKey, accessToken)
-    var response []byte
-    if response, err = s.ctxCfg.Request().PostJSON(ctx, queryImpl+accessToken, *req); err != nil {
-        return nil, err
-    }
-    
-    resp = &QuerySolutionResponse{}
-    err = json.Unmarshal(response, &resp)
-    
-    return
+	if req == nil {
+		return nil, base.ErrRequestIsEmpty
+	}
+
+	var accessToken string
+	if accessToken, err = s.getAccessToken(ctx); err != nil {
+		return nil, err
+	}
+	ctx = context.WithValue(ctx, config.AccessTokenKey, accessToken)
+	var response []byte
+	if response, err = s.ctxCfg.Request().PostJSON(ctx, queryImpl+accessToken, *req); err != nil {
+		return nil, err
+	}
+
+	resp = &QuerySolutionResponse{}
+	err = json.Unmarshal(response, &resp)
+
+	return
 }

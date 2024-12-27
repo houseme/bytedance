@@ -20,69 +20,69 @@
 package asyncnotify
 
 import (
-    "context"
-    "encoding/json"
-    
-    "github.com/houseme/bytedance/credential"
-    "github.com/houseme/bytedance/utility/helper"
+	"context"
+	"encoding/json"
+
+	"github.com/houseme/bytedance/credential"
+	"github.com/houseme/bytedance/utility/helper"
 )
 
 // AsyncNotify async notify
 type AsyncNotify struct {
-    ctxCfg *credential.ContextConfig
+	ctxCfg *credential.ContextConfig
 }
 
 // NewAsyncNotify init
 func NewAsyncNotify(cfg *credential.ContextConfig) *AsyncNotify {
-    return &AsyncNotify{ctxCfg: cfg}
+	return &AsyncNotify{ctxCfg: cfg}
 }
 
 // AsyncNotify 异步通知
 func (a *AsyncNotify) AsyncNotify(ctx context.Context, req *AsyncRequest) (resp *AsyncResponse, err error) {
-    a.ctxCfg.Logger().Debug(ctx, " async notify request params:", req)
-    resp = &AsyncResponse{
-        ErrNo:   ErrNoSuccess,
-        ErrTips: ErrTipsSuccess,
-        Type:    req.Type,
-    }
-    
-    if req.Version != defaultVersion {
-        resp.ErrNo = ErrNoRequestParameterError
-        resp.ErrTips = "version check failed"
-        return
-    }
-    
-    var checkSignResult bool
-    if checkSignResult, err = helper.CheckSign(req.ByteTimestamp, req.ByteNonceStr, req.Content, req.ByteSignature, a.ctxCfg.Config.PublicKey()); err != nil {
-        resp.ErrNo = ErrNoSystemError
-        resp.ErrTips = ErrTipsSystemError
-        return
-    }
-    
-    if !checkSignResult {
-        resp.ErrNo = ErrNoFailedToCheckTheSignature
-        resp.ErrTips = "failed"
-        return
-    }
-    if req.Type == AsyncPay {
-        var data = new(PaymentData)
-        if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
-            resp.ErrNo = ErrNoSystemError
-            resp.ErrTips = ErrTipsSystemError + err.Error()
-            return
-        }
-        resp.PaymentData = data
-    }
-    
-    if req.Type == AsyncSettle {
-        var data = new(SettleData)
-        if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
-            resp.ErrNo = ErrNoSystemError
-            resp.ErrTips = ErrTipsSystemError + err.Error()
-            return
-        }
-        resp.SettleData = data
-    }
-    
-    return
+	a.ctxCfg.Logger().Debug(ctx, " async notify request params:", req)
+	resp = &AsyncResponse{
+		ErrNo:   ErrNoSuccess,
+		ErrTips: ErrTipsSuccess,
+		Type:    req.Type,
+	}
+
+	if req.Version != defaultVersion {
+		resp.ErrNo = ErrNoRequestParameterError
+		resp.ErrTips = "version check failed"
+		return
+	}
+
+	var checkSignResult bool
+	if checkSignResult, err = helper.CheckSign(req.ByteTimestamp, req.ByteNonceStr, req.Content, req.ByteSignature, a.ctxCfg.Config.PublicKey()); err != nil {
+		resp.ErrNo = ErrNoSystemError
+		resp.ErrTips = ErrTipsSystemError
+		return
+	}
+
+	if !checkSignResult {
+		resp.ErrNo = ErrNoFailedToCheckTheSignature
+		resp.ErrTips = "failed"
+		return
+	}
+	if req.Type == AsyncPay {
+		var data = new(PaymentData)
+		if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
+			resp.ErrNo = ErrNoSystemError
+			resp.ErrTips = ErrTipsSystemError + err.Error()
+			return
+		}
+		resp.PaymentData = data
+	}
+
+	if req.Type == AsyncSettle {
+		var data = new(SettleData)
+		if err = json.Unmarshal([]byte(req.Msg), data); err != nil {
+			resp.ErrNo = ErrNoSystemError
+			resp.ErrTips = ErrTipsSystemError + err.Error()
+			return
+		}
+		resp.SettleData = data
+	}
+
+	return
 }
