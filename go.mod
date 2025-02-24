@@ -4,7 +4,7 @@ go 1.21
 toolchain go1.23.6
 
 require (
-	github.com/redis/go-redis/v9 v9.7.0
+	github.com/redis/go-redis/v9 v9.7.1
 	golang.org/x/crypto v0.34.0
 )
 
