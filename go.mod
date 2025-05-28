@@ -1,10 +1,11 @@
 module github.com/houseme/bytedance
 
-go 1.21
+go 1.23.0
+
 toolchain go1.24.1
 
 require (
-	github.com/redis/go-redis/v9 v9.8.0
+	github.com/redis/go-redis/v9 v9.9.0
 	golang.org/x/crypto v0.38.0
 )
 
